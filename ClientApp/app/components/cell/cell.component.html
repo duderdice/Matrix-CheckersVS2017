@@ -1,0 +1,11 @@
+<div class="square" [class.validMove]="square?.validMove" [class.king]="piece?.isKing">
+  <div class="square-value">
+    <div class="piece red" *ngIf="piece && piece.color === 'red'">
+      <div class="piece-style"></div>
+    </div>
+    <div class="piece black" *ngIf="piece && piece.color === 'black'">
+      <div class="piece-style"></div>
+    </div>
+
+  </div>
+</div>
