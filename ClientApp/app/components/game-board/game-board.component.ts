@@ -22,9 +22,8 @@ export class GameBoardComponent implements OnInit {
   point: Point;
   squares: Array<Square>;
   points: Array<Point>;
-
-    scoreRed: Array<number> =[];
-    scoreBlack: Array<number> =[];
+  scoreRed: Array<number> =[];
+  scoreBlack: Array<number> =[];
 
   public selectedPiece: number;
   public isMoving = false;
@@ -33,10 +32,7 @@ export class GameBoardComponent implements OnInit {
   public skippedPosition: Position;
   public availablePositionOne: Position;
   public availablePositionTwo: Position;
-
-    public pieceSelected: any;
-
-
+  public pieceSelected: any;
   public isKing = false;
 
 
@@ -50,7 +46,7 @@ export class GameBoardComponent implements OnInit {
   ngOnInit() {
     this._store.select('pieces').subscribe((pieces) => this.pieces = pieces);
     this._store.select('squares').subscribe((squares) => this.squares = squares);
-      this._store.select('points').subscribe((points) => this.points = points);
+    this._store.select('points').subscribe((points) => this.points = points);
   }
 
   public findPiece(row: number, col: number) {
@@ -135,11 +131,13 @@ export class GameBoardComponent implements OnInit {
     public moveSelected(row: number, col: number) {
     if (!this.isMoving) {
       this.originalPosition = { row, col };
-      this.pieceSelected = this.findSelectedPiece(this.originalPosition.row, this.originalPosition.col);
-      if (!this.pieceSelected.isKing) {
-        this.availableMoves(this.originalPosition);
-      }
-      this.isMoving = true;
+        this.pieceSelected = this.findSelectedPiece(this.originalPosition.row, this.originalPosition.col);
+        if (this.pieceSelected.color === this.currentPlayer  ) {
+            if (!this.pieceSelected.isKing) {
+                this.availableMoves(this.originalPosition);
+            }
+            this.isMoving = true;
+        }
     } else {
       if (this.pieceSelected.color === this.currentPlayer) {
         if (this.isAJump(this.originalPosition, { row, col })) {
@@ -207,34 +205,35 @@ export class GameBoardComponent implements OnInit {
   public isValidMove(from: Position, to: Position) {
     const checkIfSpaceEmpty = this.findEmptySpace(to.row, to.col);
     this.pieceSelected = this.findSelectedPiece(from.row, from.col);
-    if (this.pieceSelected.isKing === false) {
-      this.isKing = this.findIfKing(this.pieceSelected, from.row);
+      if (this.pieceSelected.isKing === false) {
+          this.isKing = this.findIfKing(this.pieceSelected, to.row);
     }
     if (!checkIfSpaceEmpty) {
       return false;
     }
-    if (this.pieceSelected.color === 'red') {
-      if (!this.isKing) {
-        if (to.row > from.row) {
-          if (from.col === to.col - 1 || from.col === to.col + 1) {
-            return true;
+      if (this.pieceSelected.color === 'red') {
+          if (!this.pieceSelected.isKing) {
+              if (to.row > from.row) {
+                  if (from.col === to.col - 1 || from.col === to.col + 1) {
+                      return true;
+                  }
+              }
+          } else if (this.pieceSelected.isKing) {
+              if (to.row > from.row || to.row < from.row) {
+                  if (from.col === to.col - 1 || from.col === to.col + 1) {
+                      return true;
+                  }
+              }
           }
-        }
-      } else if (this.isKing) {
-        if (to.row > from.row || to.row < from.row) {
-          if (from.col === to.col - 1 || from.col === to.col + 1) {
-            return true;
-          }
-        }
-      }
-    } else if (this.pieceSelected.color === 'black') {
-      if (!this.isKing) {
-        if (to.row < from.row) {
-          if (from.col === to.col - 1 || from.col === to.col + 1) {
-            return true;
-          }
-        }
-      } else if (this.isKing) {
+      } else if (this.pieceSelected.color === 'black') {
+          if (!this.pieceSelected.isKing) {
+              if (to.row < from.row) {
+                  if (from.col === to.col - 1 || from.col === to.col + 1) {
+                      return true;
+                  }
+              }
+   
+          } else if (this.pieceSelected.isKing) {
         if (to.row < from.row || to.row > from.row) {
           if (from.col === to.col - 1 || from.col === to.col + 1) {
             return true;

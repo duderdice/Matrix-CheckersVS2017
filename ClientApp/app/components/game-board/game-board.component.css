@@ -31,6 +31,7 @@
 }
 .score-style {
     display: inline-block;
+    margin: 3px;
 }
  .row-style{
      display:flex;
