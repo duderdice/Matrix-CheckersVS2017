@@ -3,9 +3,11 @@ import { Store } from '@ngrx/store';
 
 import { Piece } from '../../models/game-piece';
 import { Square } from '../../models/square';
+import { Point } from '../../models/point';
 import { Position } from '../../models/position';
 import { PieceStateActions } from '../../actionHandlers/pieceState.actions';
 import { SquareStateActions } from '../../actionHandlers/squareState.actions';
+import { PointStateActions } from '../../actionHandlers/pointState.actions';
 
 
 
@@ -17,7 +19,12 @@ import { SquareStateActions } from '../../actionHandlers/squareState.actions';
 export class GameBoardComponent implements OnInit {
   pieces: Array<Piece>;
   piece: Piece;
+  point: Point;
   squares: Array<Square>;
+  points: Array<Point>;
+
+    scoreRed: Array<number> =[];
+    scoreBlack: Array<number> =[];
 
   public selectedPiece: number;
   public isMoving = false;
@@ -36,12 +43,14 @@ export class GameBoardComponent implements OnInit {
   constructor(
     private _store: Store<any>,
     private _pieceState: PieceStateActions,
-    private _squareState: SquareStateActions
+    private _squareState: SquareStateActions,
+    private _pointState: PointStateActions
   ) { }
 
   ngOnInit() {
     this._store.select('pieces').subscribe((pieces) => this.pieces = pieces);
     this._store.select('squares').subscribe((squares) => this.squares = squares);
+      this._store.select('points').subscribe((points) => this.points = points);
   }
 
   public findPiece(row: number, col: number) {
@@ -115,6 +124,14 @@ export class GameBoardComponent implements OnInit {
     }
   }
 
+    public addingPoints() {
+        if (this.pieceSelected.color === 'red') {
+            this.scoreRed = Array(this.points[0].count).fill('1');
+        } else if (this.pieceSelected.color === 'black') {
+            this.scoreBlack = Array(this.points[1].count).fill('2');
+        }
+    }
+
     public moveSelected(row: number, col: number) {
     if (!this.isMoving) {
       this.originalPosition = { row, col };
@@ -126,7 +143,9 @@ export class GameBoardComponent implements OnInit {
     } else {
       if (this.pieceSelected.color === this.currentPlayer) {
         if (this.isAJump(this.originalPosition, { row, col })) {
-          this._pieceState.jump(this.originalPosition, { row, col }, this.skippedPosition);
+            this._pieceState.jump(this.originalPosition, { row, col }, this.skippedPosition);
+            this._pointState.addPoint(this.pieceSelected.color);
+            this.addingPoints();
           this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
         } else if (this.isValidMove(this.originalPosition, { row, col })) {
           this._pieceState.move(this.originalPosition, { row, col });

@@ -15,5 +15,6 @@ export class AppComponent {
   ngOnInit() {
     this._appStartUpActions.initializeGame();
     this._appStartUpActions.initializeSquares();
+    this._appStartUpActions.initializeScores();
   }
 }
