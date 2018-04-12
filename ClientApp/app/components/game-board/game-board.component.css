@@ -1,0 +1,17 @@
+.container-box{
+    display:flex;
+    flex-direction: column;
+}
+
+.container{
+   margin: auto;
+}
+.row {
+    display: flex;
+    margin-bottom: 5px;
+}
+.label{
+    margin: auto;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+}

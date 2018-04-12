@@ -1,0 +1,46 @@
+import { HttpRequest } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
+
+import { Piece } from '../models/piece';
+import { DISPLAY_PIECES, MOVE_PIECES, JUMP_PIECES, MAKE_KING } from '../stores/pieces.store';
+
+@Injectable()
+export class PieceStateActions {
+    private pieces: Array<Piece>;
+
+    constructor(
+        private _store: Store<any>,
+    ) { }
+
+    public move(from: any, to: any): void {
+        this._store.dispatch({
+            type: MOVE_PIECES,
+            origin: from,
+            destination: to
+        });
+    }
+
+    public jump(from: any, to: any, skipped: any): void {
+        this._store.dispatch({
+            type: JUMP_PIECES,
+            // payload: pieces,
+            origin: from,
+            destination: to,
+            skipped: skipped
+        });
+        this._store.dispatch({
+            type: MOVE_PIECES,
+            // payload: pieces,
+            origin: from,
+            destination: to
+        });
+    }
+
+    public makeKing(piece: any): void {
+        this._store.dispatch({
+            type: MAKE_KING,
+            payload: piece,
+        });
+    }
+}
