@@ -27,11 +27,12 @@ export class ApiService {
                 this._http
                     .get<T>(req.url)
                     .subscribe(
-                        res => {
+                    (res) => {
+                 
                             response = res;
                             return response;
                         },
-                        err => {
+                        (err) => {
                             response = err;
                             return response;
                         }

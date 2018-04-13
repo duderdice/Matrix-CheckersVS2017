@@ -4,8 +4,10 @@ import { Store } from '@ngrx/store';
 
 import { Piece } from '../models/game-piece';
 import { Square } from '../models/square';
+import { Point } from '../models/point';
 import { DISPLAY_PIECES } from '../stores/pieces.store';
 import { DISPLAY_SQUARES } from '../stores/squares.store';
+import { DISPLAY_POINTS } from '../stores/point.store';
 import * as Constants from '../constants/constants';
 import { ApiService, REQUEST_TYPE_GET } from '../services/api.service';
 
@@ -20,10 +22,11 @@ export class AppStartUpActions {
     ) { }
 
     public initializeGame(): void {
-        const piecesReq = new HttpRequest(REQUEST_TYPE_GET, `${Constants.ApiBaseUrl}/pieces`);
+        const piecesReq = new HttpRequest(REQUEST_TYPE_GET, `${"http://localhost:60118/api"}/pieces`);
         this._api.callApiService<Piece[]>(piecesReq)
             .subscribe(
-                (pieces: Array<Piece>) => {
+            (pieces: Array<Piece>) => {
+             
                     this._store.dispatch({ type: DISPLAY_PIECES, payload: pieces });
                 },
                 (err) => {
@@ -42,6 +45,19 @@ export class AppStartUpActions {
                 (err) => {
                     this._store.dispatch({ type: DISPLAY_SQUARES, payload: [] });
                 }
+            );
+    }
+
+    public initializeScores(): void {
+        const pointsReq = new HttpRequest(REQUEST_TYPE_GET, `${Constants.ApiBaseUrl}/points`);
+        this._api.callApiService<Point[]>(pointsReq)
+            .subscribe(
+            (points: Array<Point>) => {
+                this._store.dispatch({ type: DISPLAY_POINTS, payload: points });
+            },
+            (err) => {
+                this._store.dispatch({ type: DISPLAY_POINTS, payload: [] });
+            }
             );
     }
 }
