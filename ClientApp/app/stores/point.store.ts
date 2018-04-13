@@ -33,7 +33,6 @@ export function points(state: State = [], action: Actions): State {
             } else if (action.player === 'black') {
                 state[1].count += 1;
             }
-            console.log(state);
             return state;
 
          default:

@@ -22,10 +22,11 @@ export class AppStartUpActions {
     ) { }
 
     public initializeGame(): void {
-        const piecesReq = new HttpRequest(REQUEST_TYPE_GET, `${Constants.ApiBaseUrl}/pieces`);
+        const piecesReq = new HttpRequest(REQUEST_TYPE_GET, `${"http://localhost:60118/api"}/pieces`);
         this._api.callApiService<Piece[]>(piecesReq)
             .subscribe(
-                (pieces: Array<Piece>) => {
+            (pieces: Array<Piece>) => {
+             
                     this._store.dispatch({ type: DISPLAY_PIECES, payload: pieces });
                 },
                 (err) => {

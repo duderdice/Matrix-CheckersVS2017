@@ -46,7 +46,8 @@ export class GameBoardComponent implements OnInit {
   ngOnInit() {
     this._store.select('pieces').subscribe((pieces) => this.pieces = pieces);
     this._store.select('squares').subscribe((squares) => this.squares = squares);
-    this._store.select('points').subscribe((points) => this.points = points);
+      this._store.select('points').subscribe((points) => this.points = points);
+      console.log(this.pieces);
   }
 
   public findPiece(row: number, col: number) {
@@ -163,40 +164,147 @@ export class GameBoardComponent implements OnInit {
 
   public isAJump(from: Position, to: Position) {
     this.pieceSelected = this.findSelectedPiece(from.row, from.col);
-    if (this.pieceSelected.color === 'red') {
-      if (to.row > from.row) {
-        if (from.col === to.col - 2) {
-          this.skippedPosition = {
-            row: from.row + 1,
-            col: from.col + 1
-          };
-          return true;
-        }
-        if (from.col === to.col + 2) {
-          this.skippedPosition = {
-            row: from.row + 1,
-            col: from.col - 1
-          };
-          return true;
-        }
-      }
+      if (this.pieceSelected.color === 'red') {
+          if (!this.pieceSelected.isKing) {
+              if (to.row > from.row) {
+                  if (from.col === to.col - 2) {
+                      this.skippedPosition = {
+                          row: from.row + 1,
+                          col: from.col + 1
+                      };
+                      return true;
+                  }
+                  if (from.col === to.col + 2) {
+                      this.skippedPosition = {
+                          row: from.row + 1,
+                          col: from.col - 1
+                      };
+                      return true;
+                  }
+              } else if (to.row < from.row) {
+                  if (from.col === to.col - 2) {
+                      this.skippedPosition = {
+                          row: from.row - 1,
+                          col: from.col + 1
+                      };
+                      return true;
+                  }
+                  if (from.col === to.col + 2) {
+                      this.skippedPosition = {
+                          row: from.row - 1,
+                          col: from.col - 1
+                      };
+                      return true;
+                  }
+
+              }
+          } else if (this.pieceSelected.isKing) {
+              if (to.row > from.row) {
+                  if (from.col === to.col - 2) {
+                      this.skippedPosition = {
+                          row: from.row + 1,
+                          col: from.col +1
+                      };
+                      return true;
+
+                  } else if (from.col === to.col + 2) {
+                      this.skippedPosition = {
+                          row: from.row + 1,
+                          col: from.col -1
+                      };
+                      return true;
+
+                  }
+              } else if (to.row < from.row) {
+                  if (from.col === to.col - 2) {
+                      this.skippedPosition = {
+                          row: from.row - 1,
+                          col: from.col + 1
+                      };
+                      return true;
+
+                  } else if (from.col === to.col + 2) {
+                      this.skippedPosition = {
+                          row: from.row - 1,
+                          col: from.col - 1
+                      };
+                      return true;
+
+                  }
+
+              }
+          }
+      
     } else if (this.pieceSelected.color === 'black') {
-      if (to.row < from.row) {
-        if (from.col === to.col - 2) {
-          this.skippedPosition = {
-            row: from.row - 1,
-            col: from.col + 1
-          };
-          return true;
-        }
-        if (from.col === to.col + 2) {
-          this.skippedPosition = {
-            row: from.row - 1,
-            col: from.col - 1
-          };
-          return true;
-        }
-      }
+          if (!this.pieceSelected.isKing) {
+              if (to.row > from.row) {
+                  if (from.col === to.col - 2) {
+                      this.skippedPosition = {
+                          row: from.row + 1,
+                          col: from.col + 1
+                      };
+                      return true;
+                  }
+                  if (from.col === to.col + 2) {
+                      this.skippedPosition = {
+                          row: from.row + 1,
+                          col: from.col - 1
+                      };
+                      return true;
+                  }
+              } else if (to.row < from.row) {
+                  if (from.col === to.col - 2) {
+                      this.skippedPosition = {
+                          row: from.row - 1,
+                          col: from.col + 1
+                      };
+                      return true;
+                  }
+                  if (from.col === to.col + 2) {
+                      this.skippedPosition = {
+                          row: from.row - 1,
+                          col: from.col - 1
+                      };
+                      return true;
+                  }
+
+              }
+          } else if (this.pieceSelected.isKing) {
+              if (to.row > from.row) {
+                  if (from.col === to.col - 2) {
+                      this.skippedPosition = {
+                          row: from.row + 1,
+                          col: from.col + 1
+                      };
+                      return true;
+
+                  } else if (from.col === to.col + 2) {
+                      this.skippedPosition = {
+                          row: from.row + 1,
+                          col: from.col - 1
+                      };
+                      return true;
+
+                  }
+              } else if (to.row < from.row) {
+                  if (from.col === to.col - 2) {
+                      this.skippedPosition = {
+                          row: from.row - 1,
+                          col: from.col + 1
+                      };
+                      return true;
+
+                  } else if (from.col === to.col + 2) {
+                      this.skippedPosition = {
+                          row: from.row - 1,
+                          col: from.col - 1
+                      };
+                      return true;
+
+                  }
+
+              }
+          }
     }
     return false;
 
