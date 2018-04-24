@@ -46,11 +46,10 @@ export class GameBoardComponent implements OnInit {
   ngOnInit() {
     this._store.select('pieces').subscribe((pieces) => this.pieces = pieces);
     this._store.select('squares').subscribe((squares) => this.squares = squares);
-      this._store.select('points').subscribe((points) => this.points = points);
-      console.log(this.pieces);
+    this._store.select('points').subscribe((points) => this.points = points);
   }
 
-  public findPiece(row: number, col: number) {
+    public findPiece(row: number, col: number) {
     return this.pieces.find((piece) => {
       if (piece.row === row && piece.col === col) {
         return true;
@@ -60,9 +59,9 @@ export class GameBoardComponent implements OnInit {
     });
   }
 
-    public findSquare(row: number, col: number) {
-    return this.squares.find((square) => (square.row === row && square.col === col));
-  }
+  //  public findSquare(row: number, col: number) {
+  //  return this.squares.find((square) => (square.row === row && square.col === col));
+  //}
 
     public findSelectedPiece(row: number, col: number) {
     for (let i = 0; i < this.pieces.length; i++) {
@@ -83,7 +82,7 @@ export class GameBoardComponent implements OnInit {
     }
   }
 
-  public findIfKing(piece: Piece, row: number) {
+    public findIfKing(piece: Piece, row: number) {
     if (piece.color === 'red' && row === 7) {
       this._pieceState.makeKing(piece);
       return true;
@@ -94,8 +93,8 @@ export class GameBoardComponent implements OnInit {
       return false;
   }
 
-  public availableMoves(position: Position) {
-    this.pieceSelected = this.findSelectedPiece(position.row, position.col);
+    public availableMoves(position: Position) {
+        this.pieceSelected = this.findSelectedPiece(position.row, position.col);
     if (this.pieceSelected.color === 'red') {
       this.availablePositionOne = {
         row: position.row + 1,
@@ -130,7 +129,7 @@ export class GameBoardComponent implements OnInit {
     }
 
     public moveSelected(row: number, col: number) {
-    if (!this.isMoving) {
+        if (!this.isMoving) {
       this.originalPosition = { row, col };
         this.pieceSelected = this.findSelectedPiece(this.originalPosition.row, this.originalPosition.col);
         if (this.pieceSelected.color === this.currentPlayer  ) {

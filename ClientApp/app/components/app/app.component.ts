@@ -6,13 +6,13 @@ import { AppStartUpActions } from '../../actionHandlers/appStartUp.actions';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
-  constructor(
+  constructor(      
     private _appStartUpActions: AppStartUpActions,
   ) { }
 
-  ngOnInit() {
+    ngOnInit() {
     this._appStartUpActions.initializeGame();
     this._appStartUpActions.initializeSquares();
     this._appStartUpActions.initializeScores();

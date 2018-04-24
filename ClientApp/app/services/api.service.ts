@@ -5,11 +5,13 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/map';
 
 import * as Constants from '../constants/constants';
 
 export const
     REQUEST_TYPE_GET = 'GET',
+    REQUEST_TYPE_GET_PIECES = 'GET',
     REQUEST_TYPE_POST = 'POST';
 
 @Injectable()
@@ -23,21 +25,43 @@ export class ApiService {
     public callApiService<T>(req: HttpRequest<any>): Observable<T> {
         let response : any;
         switch (req.method) {
+
             case REQUEST_TYPE_GET:
-                this._http
+               return this._http
                     .get<T>(req.url)
-                    .subscribe(
-                    (res) => {
-                 
-                            response = res;
-                            return response;
-                        },
-                        (err) => {
-                            response = err;
-                            return response;
-                        }
-                    );
-                break;
+                    .map(res => {
+                        response = res;
+                        return response;
+                    }).catch(
+                    err => {
+                        return Observable.throw(err)
+                    });
+                      
+
+          
+            //case REQUEST_TYPE_GET:
+            //   return this._http
+            //        .get<T>(req.url)
+            //        .subscribe(
+            //        res => {
+            //            response = res;
+            //            return response;
+            //        },
+            //        err => {
+            //            response = err;
+            //            return response;
+            //        }
+            //        );
+              
+
+            //case REQUEST_TYPE_GET:
+            //         this._http
+            //        .get<T>(req.url)
+              
+                                     
+            //    return this._http.get<T>(req.url);
+
+     
         }
         return Observable.of(response);
     }

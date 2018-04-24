@@ -16,7 +16,7 @@ namespace DemoApp.Controllers
         public IEnumerable<Piece> GetPieces()
         {
 
-            Piece[] Pieces = new Piece[] {
+            Piece[] Pieces = new Piece[24] {
                new Piece()
                {
                     id= 0,
@@ -24,7 +24,7 @@ namespace DemoApp.Controllers
                     col= 1,
                     color= "red",
                     isKing= false
-                }, 
+                },
                new Piece(){
                         id= 1,
                         row = 0,
@@ -189,7 +189,8 @@ namespace DemoApp.Controllers
                     isKing= false
                  }
             };
-
+            Console.WriteLine("heyyy");
+            Console.WriteLine(Pieces);
             return Pieces;
         }
     }

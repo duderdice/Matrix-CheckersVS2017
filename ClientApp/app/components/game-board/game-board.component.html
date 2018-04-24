@@ -1,28 +1,29 @@
 <div>
-        <div class="game-container-box">
-            <div class="row" *ngFor="let row of [0,1,2,3,4,5,6,7]">
-                <app-cell [piece]="findPiece(row,col)" [square]="findSquare(row,col)" (click)="moveSelected(row,col)" *ngFor="let col of [0,1,2,3,4,5,6,7]">
-                </app-cell>
-            </div>
+    <div class="game-container-box">
+        <div class="row" *ngFor="let row of [0,1,2,3,4,5,6,7]">
+            <app-cell [piece]="findPiece(row,col)"  (click)="moveSelected(row,col)" *ngFor="let col of [0,1,2,3,4,5,6,7]">
+            </app-cell>
         </div>
-  <div class="label">
-      <div>
-          Player {{currentPlayer}}
-      </div>
-   
-  </div>
-   <div  class="score-board">
-       <div class="row-style">
-           <div class="score-style">
-               Player red
-           </div>
-           <div class="red score " *ngFor= "let score of scoreRed"></div>
-           </div>
-       <div class=" row-style">
-           <div class="score-style">
-               Player black
-           </div>
-           <div class="black score" *ngFor=" let score of scoreBlack"></div>
-       </div>
-       </div>
+    </div>
+    <div class="label">
+        <div>
+            Player {{currentPlayer}}
+        </div>
+
+    </div>
+    <div class="score-board">
+        <div class="row-style">
+            <div class="score-style">
+                Player red
+            </div>
+            <div class="red score " *ngFor="let score of scoreRed"></div>
+        </div>
+        <div class=" row-style">
+            <div class="score-style">
+                Player black
+            </div>
+            <div class="black score" *ngFor=" let score of scoreBlack"></div>
+        </div>
+    </div>
 </div>
+<!--[square]="findSquare(row,col)"-->
