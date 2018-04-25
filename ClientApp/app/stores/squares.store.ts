@@ -16,8 +16,10 @@ export class DisplaySquareAction implements Action {
 
 export class HighlightSquareAction implements Action {
     readonly type = HIGHLIGHT_SQUARES;
-    firstOption: { row: number, col: number};
-    secondOption: { row: number, col: number };
+    payload: {
+        firstOption: { row: number, col: number };
+        secondOption: { row: number, col: number };
+    };
 }
 
 export class UnhighlightSquareAction implements Action {
@@ -26,7 +28,7 @@ export class UnhighlightSquareAction implements Action {
 
 export type Actions = DisplaySquareAction | HighlightSquareAction | UnhighlightSquareAction;
 
-export function squares(state: State, action: Actions): State {
+export function squares(state: State=[], action: Actions): State {
     switch (action.type) {
 
         case DISPLAY_SQUARES:
@@ -34,8 +36,8 @@ export function squares(state: State, action: Actions): State {
 
         case HIGHLIGHT_SQUARES:
 
-            markSquare(state, action.firstOption);
-            markSquare(state, action.secondOption);
+            markSquare(state, action.payload.firstOption);
+            markSquare(state, action.payload.secondOption);
 
             return state;
 

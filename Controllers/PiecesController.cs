@@ -9,14 +9,16 @@ using DemoApp.Models;
 
 namespace DemoApp.Controllers
 {
+
     [Route("api/[controller]")]
     public class PiecesController : Controller
     {
+
         [HttpGet]
         public IEnumerable<Piece> GetPieces()
         {
 
-            Piece[] Pieces = new Piece[] {
+            Piece[] Pieces = new Piece[24] {
                new Piece()
                {
                     id= 0,
@@ -24,7 +26,7 @@ namespace DemoApp.Controllers
                     col= 1,
                     color= "red",
                     isKing= false
-                }, 
+                },
                new Piece(){
                         id= 1,
                         row = 0,
@@ -192,7 +194,10 @@ namespace DemoApp.Controllers
 
             return Pieces;
         }
+
+       
     }
+}
         
     
-}
+

@@ -39,7 +39,7 @@ export function pieces(state: State = [], action: Actions): State {
     switch (action.type) {
 
         case DISPLAY_PIECES:
-            return action.payload;
+        return action.payload;
 
         case MOVE_PIECES:
             const piece = state.find((p) => {
