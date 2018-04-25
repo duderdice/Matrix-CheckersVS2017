@@ -9,9 +9,11 @@ using DemoApp.Models;
 
 namespace DemoApp.Controllers
 {
+
     [Route("api/[controller]")]
     public class PiecesController : Controller
     {
+
         [HttpGet]
         public IEnumerable<Piece> GetPieces()
         {
@@ -189,11 +191,13 @@ namespace DemoApp.Controllers
                     isKing= false
                  }
             };
-            Console.WriteLine("heyyy");
-            Console.WriteLine(Pieces);
+
             return Pieces;
         }
+
+       
     }
+}
         
     
-}
+

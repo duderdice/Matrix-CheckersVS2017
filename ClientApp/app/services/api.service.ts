@@ -11,7 +11,6 @@ import * as Constants from '../constants/constants';
 
 export const
     REQUEST_TYPE_GET = 'GET',
-    REQUEST_TYPE_GET_PIECES = 'GET',
     REQUEST_TYPE_POST = 'POST';
 
 @Injectable()

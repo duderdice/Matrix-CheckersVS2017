@@ -8,6 +8,7 @@ import { Position } from '../../models/position';
 import { PieceStateActions } from '../../actionHandlers/pieceState.actions';
 import { SquareStateActions } from '../../actionHandlers/squareState.actions';
 import { PointStateActions } from '../../actionHandlers/pointState.actions';
+import { AppStateActions } from '../../actionHandlers/appState.actions';
 
 
 
@@ -34,22 +35,36 @@ export class GameBoardComponent implements OnInit {
   public availablePositionTwo: Position;
   public pieceSelected: any;
   public isKing = false;
+    private piecesSubscription: any;
+    private pointsSubscription: any;
+    private squaresSubscription: any;
+    private appStateSubscription: any;
 
 
   constructor(
     private _store: Store<any>,
     private _pieceState: PieceStateActions,
     private _squareState: SquareStateActions,
-    private _pointState: PointStateActions
+      private _pointState: PointStateActions,
+      private _appStateActions: AppStateActions
   ) { }
 
-  ngOnInit() {
-    this._store.select('pieces').subscribe((pieces) => this.pieces = pieces);
-    this._store.select('squares').subscribe((squares) => this.squares = squares);
-    this._store.select('points').subscribe((points) => this.points = points);
+  public ngOnInit() {
+      this._store.select('pieces').subscribe((pieces) => this.pieces = pieces);
+      this._store.select('squares').subscribe((squares) => this.squares = squares);
+      this._store.select('points').subscribe((points) => this.points = points);
+
+      this.appStateSubscription = this._store.select('appState').subscribe((appState) => {
+          this.isMoving = appState[`player.isMoving`];
+      });
+
   }
 
-    public findPiece(row: number, col: number) {
+    public ngOnDestroy() {
+        this.appStateSubscription.unsubscribe();
+    }
+
+    public findPiece(row: number, col: number): Piece | undefined {
     return this.pieces.find((piece) => {
       if (piece.row === row && piece.col === col) {
         return true;
@@ -59,11 +74,11 @@ export class GameBoardComponent implements OnInit {
     });
   }
 
-  //  public findSquare(row: number, col: number) {
-  //  return this.squares.find((square) => (square.row === row && square.col === col));
-  //}
+    public findSquare(row: number, col: number): Square | undefined {
+    return this.squares.find((square) => (square.row === row && square.col === col));
+  }
 
-    public findSelectedPiece(row: number, col: number) {
+    public findSelectedPiece(row: number, col: number): Piece | false {
     for (let i = 0; i < this.pieces.length; i++) {
         if (this.pieces[i].row === row && this.pieces[i].col === col) {
             const requiredPiece = this.pieces[i];
@@ -74,7 +89,7 @@ export class GameBoardComponent implements OnInit {
         return false;
   }
 
-    public findEmptySpace(row: number, col: number) {
+    public findEmptySpace(row: number, col: number): boolean | undefined {
     for (let i = 0; i < this.pieces.length; i++) {
       if (this.pieces[i].row !== row && this.pieces[i].col !== col) {
         return true;
@@ -82,7 +97,7 @@ export class GameBoardComponent implements OnInit {
     }
   }
 
-    public findIfKing(piece: Piece, row: number) {
+    public findIfKing(piece: Piece, row: number): boolean {
     if (piece.color === 'red' && row === 7) {
       this._pieceState.makeKing(piece);
       return true;
@@ -93,34 +108,35 @@ export class GameBoardComponent implements OnInit {
       return false;
   }
 
-    public availableMoves(position: Position) {
+    public availableMoves(position: Position): void {
         this.pieceSelected = this.findSelectedPiece(position.row, position.col);
-    if (this.pieceSelected.color === 'red') {
-      this.availablePositionOne = {
-        row: position.row + 1,
-        col: position.col + 1
-      };
-      this.availablePositionTwo = {
-        row: position.row + 1,
-        col: position.col - 1
-      };
-      this._squareState.availableMoves(this.availablePositionOne, this.availablePositionTwo);
-    } else {
-      if (this.pieceSelected.color === 'black') {
-        this.availablePositionOne = {
-          row: position.row - 1,
-          col: position.col + 1
-        };
-        this.availablePositionTwo = {
-          row: position.row - 1,
-          col: position.col - 1
-        };
-        this._squareState.availableMoves(this.availablePositionOne, this.availablePositionTwo);
-      }
-    }
+        this._squareState.availableMoves(position, this.pieceSelected);
+    //if (this.pieceSelected.color === 'red') {
+    //  this.availablePositionOne = {
+    //    row: position.row + 1,
+    //    col: position.col + 1
+    //  };
+    //  this.availablePositionTwo = {
+    //    row: position.row + 1,
+    //    col: position.col - 1
+    //  };
+    //  this._squareState.availableMoves(this.availablePositionOne, this.availablePositionTwo);
+    //} else {
+    //  if (this.pieceSelected.color === 'black') {
+    //    this.availablePositionOne = {
+    //      row: position.row - 1,
+    //      col: position.col + 1
+    //    };
+    //    this.availablePositionTwo = {
+    //      row: position.row - 1,
+    //      col: position.col - 1
+    //    };
+    //    this._squareState.availableMoves(this.availablePositionOne, this.availablePositionTwo);
+    //  }
+    //}
   }
 
-    public addingPoints() {
+    public addingPoints(): void {
         if (this.pieceSelected.color === 'red') {
             this.scoreRed = Array(this.points[0].count).fill('1');
         } else if (this.pieceSelected.color === 'black') {
@@ -128,19 +144,21 @@ export class GameBoardComponent implements OnInit {
         }
     }
 
-    public moveSelected(row: number, col: number) {
+    public moveSelected(row: number, col: number): void {
         if (!this.isMoving) {
-      this.originalPosition = { row, col };
-        this.pieceSelected = this.findSelectedPiece(this.originalPosition.row, this.originalPosition.col);
-        if (this.pieceSelected.color === this.currentPlayer  ) {
-            if (!this.pieceSelected.isKing) {
-                this.availableMoves(this.originalPosition);
+            this.originalPosition = { row, col };
+            this.pieceSelected = this.findSelectedPiece(this.originalPosition.row, this.originalPosition.col);
+            if (this.pieceSelected.color === this.currentPlayer  ) {
+                if (!this.pieceSelected.isKing) {
+                    this.availableMoves(this.originalPosition);
+                }
+                //this.isMoving = true;
+
+                this._appStateActions.updateState({ 'player.isMoving' : true});
             }
-            this.isMoving = true;
-        }
-    } else {
-      if (this.pieceSelected.color === this.currentPlayer) {
-        if (this.isAJump(this.originalPosition, { row, col })) {
+        } else {
+            if (this.pieceSelected.color === this.currentPlayer) {
+                if (this.isAJump(this.originalPosition, { row, col })) {
             this._pieceState.jump(this.originalPosition, { row, col }, this.skippedPosition);
             this._pointState.addPoint(this.pieceSelected.color);
             this.addingPoints();
@@ -150,9 +168,11 @@ export class GameBoardComponent implements OnInit {
           this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
         }
         this._squareState.unhighlightSquares();
-        this.isMoving = false;
+                //this.isMoving = false;
+                this._appStateActions.updateState({ 'player.isMoving': false });
       } else {
-        this.isMoving = false;
+                //this.isMoving = false;
+                this._appStateActions.updateState({ 'player.isMoving': false });
       }
 
       // this.currentPlayer = this.currentPlayer === 'Player Red' ? 'Player Black' : 'Player Red';
@@ -161,7 +181,7 @@ export class GameBoardComponent implements OnInit {
 
 
 
-  public isAJump(from: Position, to: Position) {
+    public isAJump(from: Position, to: Position): boolean {
     this.pieceSelected = this.findSelectedPiece(from.row, from.col);
       if (this.pieceSelected.color === 'red') {
           if (!this.pieceSelected.isKing) {
@@ -309,7 +329,7 @@ export class GameBoardComponent implements OnInit {
 
   }
 
-  public isValidMove(from: Position, to: Position) {
+    public isValidMove(from: Position, to: Position): boolean {
     const checkIfSpaceEmpty = this.findEmptySpace(to.row, to.col);
     this.pieceSelected = this.findSelectedPiece(from.row, from.col);
       if (this.pieceSelected.isKing === false) {

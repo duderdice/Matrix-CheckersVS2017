@@ -12,11 +12,7 @@ namespace DemoApp.Controllers
     [Route("api/[controller]")]
     public class SquaresController : Controller
     {
-        [HttpGet]
-        public IEnumerable<Square> GetSquares()
-        {
-
-            Square[] Squares = new Square[] {
+        public Square[] Squares = new Square[] {
                 new Square()
                 {
                     id= 0,
@@ -46,7 +42,7 @@ namespace DemoApp.Controllers
                     validMove= false
                 },
                 new Square()
-                {   
+                {
                     id= 4,
                     row= 0,
                     col= 4,
@@ -412,10 +408,13 @@ namespace DemoApp.Controllers
 
                 }
         };
+
+
+        [HttpGet]
+        public IEnumerable<Square> GetSquares()
+        {
             return Squares;
+
         }
-         
-        
-          
     }
 }

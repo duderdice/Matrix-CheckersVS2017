@@ -26,11 +26,11 @@ export class UnhighlightSquareAction implements Action {
 
 export type Actions = DisplaySquareAction | HighlightSquareAction | UnhighlightSquareAction;
 
-export function squares(state: State, action: Actions): State {
+export function squares(state: State=[], action: Actions): State {
     switch (action.type) {
 
         case DISPLAY_SQUARES:
-                      return action.payload;
+            return action.payload;
 
         case HIGHLIGHT_SQUARES:
 

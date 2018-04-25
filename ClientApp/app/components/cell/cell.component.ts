@@ -21,18 +21,7 @@ export class CellComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    /*
-    this._store.select('squares').subscribe((squares) => {
-      this.square = squares.find((square) => {
-        if (this.piece) {
-          return (square.row === this.piece.row && square.col === this.piece.col);
-        }
-      });
-    });
-    */
-    // const a = this.squares.find((square) => square.validMove === true);
-    // console.log(a);
-
+  
   }
 
 }
