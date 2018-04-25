@@ -43,7 +43,6 @@ export class AppStartUpActions {
             .subscribe(
             (squares: Array<Square>) => {
                 this._store.dispatch({ type: DISPLAY_SQUARES, payload: squares });
-
             },
             (err) => {
                 this._store.dispatch({ type: DISPLAY_SQUARES, payload: [] });

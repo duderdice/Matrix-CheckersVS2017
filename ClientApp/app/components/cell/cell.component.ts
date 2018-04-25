@@ -20,7 +20,7 @@ export class CellComponent implements OnInit {
     private _store: Store<any>,
   ) { }
 
-  ngOnInit() {
+  public ngOnInit() {
   
   }
 

@@ -13,10 +13,6 @@ export class PieceActions {
         private _store: Store<any>,
     ) { }
 
-    public moveTest(): void{
-
-    }
-
     public move(from: any, to: any): void {
         this._store.dispatch({
             type: MOVE_PIECES,
