@@ -5,136 +5,108 @@ import { Piece } from '../../models/game-piece';
 import { Square } from '../../models/square';
 import { Point } from '../../models/point';
 import { Position } from '../../models/position';
-import { PieceStateActions } from '../../actionHandlers/pieceState.actions';
-import { SquareStateActions } from '../../actionHandlers/squareState.actions';
-import { PointStateActions } from '../../actionHandlers/pointState.actions';
+import { PieceActions } from '../../actionHandlers/pieceActions.actions';
+import { GameBoardActions } from '../../actionHandlers/gameBoardActions.actions';
+import { PointActions } from '../../actionHandlers/pointActions.actions';
 import { AppStateActions } from '../../actionHandlers/appState.actions';
 
 
 
 @Component({
-  selector: 'app-game-board',
-  templateUrl: './game-board.component.html',
-  styleUrls: ['./game-board.component.css']
+    selector: 'app-game-board',
+    templateUrl: './game-board.component.html',
+    styleUrls: ['./game-board.component.css']
 })
 export class GameBoardComponent implements OnInit {
-  pieces: Array<Piece>;
-  piece: Piece;
-  point: Point;
-  squares: Array<Square>;
-  points: Array<Point>;
-  scoreRed: Array<number> =[];
-  scoreBlack: Array<number> =[];
+    pieces: Array<Piece>;
+    piece: Piece;
+    point: Point;
+    squares: Array<Square>;
+    points: Array<Point>;
+    scoreRed: Array<number> = [];
+    scoreBlack: Array<number> = [];
 
-  public selectedPiece: number;
-  public isMoving = false;
-  public originalPosition: Position;
-  public currentPlayer = 'red';
-  public skippedPosition: Position;
-  public availablePositionOne: Position;
-  public availablePositionTwo: Position;
-  public pieceSelected: any;
-  public isKing = false;
+    public selectedPiece: number;
+    public isMoving = false;
+    public originalPosition: Position;
+    public currentPlayer = 'red';
+    public skippedPosition: Position;
+    public availablePositionOne: Position;
+    public availablePositionTwo: Position;
+    public pieceSelected: any;
+    public isKing = false;
     private piecesSubscription: any;
     private pointsSubscription: any;
     private squaresSubscription: any;
     private appStateSubscription: any;
 
 
-  constructor(
-    private _store: Store<any>,
-    private _pieceState: PieceStateActions,
-    private _squareState: SquareStateActions,
-      private _pointState: PointStateActions,
-      private _appStateActions: AppStateActions
-  ) { }
+    constructor(
+        private _store: Store<any>,
+        private _pieceActions: PieceActions,
+        private _gameBoardActions: GameBoardActions,
+        private _pointActions: PointActions,
+        private _appStateActions: AppStateActions
+    ) { }
 
-  public ngOnInit() {
-      this._store.select('pieces').subscribe((pieces) => this.pieces = pieces);
-      this._store.select('squares').subscribe((squares) => this.squares = squares);
-      this._store.select('points').subscribe((points) => this.points = points);
+    public ngOnInit() {
+        this._store.select('pieces').subscribe((pieces) => this.pieces = pieces);
+        this._store.select('squares').subscribe((squares) => this.squares = squares);
+        this._store.select('points').subscribe((points) => this.points = points);
 
-      this.appStateSubscription = this._store.select('appState').subscribe((appState) => {
-          this.isMoving = appState[`player.isMoving`];
-      });
+        this.appStateSubscription = this._store.select('appState').subscribe((appState) => {
+            this.isMoving = appState[`player.isMoving`];
+        });
 
-  }
+    }
 
     public ngOnDestroy() {
         this.appStateSubscription.unsubscribe();
     }
 
     public findPiece(row: number, col: number): Piece | undefined {
-    return this.pieces.find((piece) => {
-      if (piece.row === row && piece.col === col) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-  }
+        return this.pieces.find((piece) => {
+            if (piece.row === row && piece.col === col) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+    }
 
     public findSquare(row: number, col: number): Square | undefined {
-    return this.squares.find((square) => (square.row === row && square.col === col));
-  }
+        return this.squares.find((square) => (square.row === row && square.col === col));
+    }
 
     public findSelectedPiece(row: number, col: number): Piece | false {
-    for (let i = 0; i < this.pieces.length; i++) {
-        if (this.pieces[i].row === row && this.pieces[i].col === col) {
-            const requiredPiece = this.pieces[i];
-            return requiredPiece;
+        for (let i = 0; i < this.pieces.length; i++) {
+            if (this.pieces[i].row === row && this.pieces[i].col === col) {
+                const requiredPiece = this.pieces[i];
+                return requiredPiece;
+            }
+
         }
-      
-    }
         return false;
-  }
+    }
 
     public findEmptySpace(row: number, col: number): boolean | undefined {
-    for (let i = 0; i < this.pieces.length; i++) {
-      if (this.pieces[i].row !== row && this.pieces[i].col !== col) {
-        return true;
-      }
+        for (let i = 0; i < this.pieces.length; i++) {
+            if (this.pieces[i].row !== row && this.pieces[i].col !== col) {
+                return true;
+            }
+        }
     }
-  }
 
     public findIfKing(piece: Piece, row: number): boolean {
-    if (piece.color === 'red' && row === 7) {
-      this._pieceState.makeKing(piece);
-      return true;
-    } else if (piece.color === 'black' && row === 0) {
-      this._pieceState.makeKing(piece);
-      return true;
+        if (piece.color === 'red' && row === 7) {
+            this._pieceActions.makeKing(piece);
+            return true;
+        } else if (piece.color === 'black' && row === 0) {
+            this._pieceActions.makeKing(piece);
+            return true;
+        }
+        return false;
     }
-      return false;
-  }
-
-    public availableMoves(position: Position): void {
-        this.pieceSelected = this.findSelectedPiece(position.row, position.col);
-        this._squareState.availableMoves(position, this.pieceSelected);
-    //if (this.pieceSelected.color === 'red') {
-    //  this.availablePositionOne = {
-    //    row: position.row + 1,
-    //    col: position.col + 1
-    //  };
-    //  this.availablePositionTwo = {
-    //    row: position.row + 1,
-    //    col: position.col - 1
-    //  };
-    //  this._squareState.availableMoves(this.availablePositionOne, this.availablePositionTwo);
-    //} else {
-    //  if (this.pieceSelected.color === 'black') {
-    //    this.availablePositionOne = {
-    //      row: position.row - 1,
-    //      col: position.col + 1
-    //    };
-    //    this.availablePositionTwo = {
-    //      row: position.row - 1,
-    //      col: position.col - 1
-    //    };
-    //    this._squareState.availableMoves(this.availablePositionOne, this.availablePositionTwo);
-    //  }
-    //}
-  }
 
     public addingPoints(): void {
         if (this.pieceSelected.color === 'red') {
@@ -148,226 +120,220 @@ export class GameBoardComponent implements OnInit {
         if (!this.isMoving) {
             this.originalPosition = { row, col };
             this.pieceSelected = this.findSelectedPiece(this.originalPosition.row, this.originalPosition.col);
-            if (this.pieceSelected.color === this.currentPlayer  ) {
+            if (this.pieceSelected.color === this.currentPlayer) {
                 if (!this.pieceSelected.isKing) {
-                    this.availableMoves(this.originalPosition);
+                    this._gameBoardActions.availableMoves(this.originalPosition, this.pieceSelected);
                 }
-                //this.isMoving = true;
-
-                this._appStateActions.updateState({ 'player.isMoving' : true});
+                this._appStateActions.updateState({ 'player.isMoving': true });
             }
         } else {
             if (this.pieceSelected.color === this.currentPlayer) {
                 if (this.isAJump(this.originalPosition, { row, col })) {
-            this._pieceState.jump(this.originalPosition, { row, col }, this.skippedPosition);
-            this._pointState.addPoint(this.pieceSelected.color);
-            this.addingPoints();
-          this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
-        } else if (this.isValidMove(this.originalPosition, { row, col })) {
-          this._pieceState.move(this.originalPosition, { row, col });
-          this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
+                    this._pieceActions.jump(this.originalPosition, { row, col }, this.skippedPosition);
+                    this._pointActions.addPoint(this.pieceSelected.color);
+                    this.addingPoints();
+                    this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
+                } else if (this.isValidMove(this.originalPosition, { row, col })) {
+                    this._pieceActions.move(this.originalPosition, { row, col });
+                    this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
+                }
+                this._gameBoardActions.unhighlightSquares();
+                this._appStateActions.updateState({ 'player.isMoving': false });
+            } else {
+                this._appStateActions.updateState({ 'player.isMoving': false });
+            }
         }
-        this._squareState.unhighlightSquares();
-                //this.isMoving = false;
-                this._appStateActions.updateState({ 'player.isMoving': false });
-      } else {
-                //this.isMoving = false;
-                this._appStateActions.updateState({ 'player.isMoving': false });
-      }
-
-      // this.currentPlayer = this.currentPlayer === 'Player Red' ? 'Player Black' : 'Player Red';
     }
-  }
 
 
 
     public isAJump(from: Position, to: Position): boolean {
-    this.pieceSelected = this.findSelectedPiece(from.row, from.col);
-      if (this.pieceSelected.color === 'red') {
-          if (!this.pieceSelected.isKing) {
-              if (to.row > from.row) {
-                  if (from.col === to.col - 2) {
-                      this.skippedPosition = {
-                          row: from.row + 1,
-                          col: from.col + 1
-                      };
-                      return true;
-                  }
-                  if (from.col === to.col + 2) {
-                      this.skippedPosition = {
-                          row: from.row + 1,
-                          col: from.col - 1
-                      };
-                      return true;
-                  }
-              } else if (to.row < from.row) {
-                  if (from.col === to.col - 2) {
-                      this.skippedPosition = {
-                          row: from.row - 1,
-                          col: from.col + 1
-                      };
-                      return true;
-                  }
-                  if (from.col === to.col + 2) {
-                      this.skippedPosition = {
-                          row: from.row - 1,
-                          col: from.col - 1
-                      };
-                      return true;
-                  }
+        this.pieceSelected = this.findSelectedPiece(from.row, from.col);
+        if (this.pieceSelected.color === 'red') {
+            if (!this.pieceSelected.isKing) {
+                if (to.row > from.row) {
+                    if (from.col === to.col - 2) {
+                        this.skippedPosition = {
+                            row: from.row + 1,
+                            col: from.col + 1
+                        };
+                        return true;
+                    }
+                    if (from.col === to.col + 2) {
+                        this.skippedPosition = {
+                            row: from.row + 1,
+                            col: from.col - 1
+                        };
+                        return true;
+                    }
+                } else if (to.row < from.row) {
+                    if (from.col === to.col - 2) {
+                        this.skippedPosition = {
+                            row: from.row - 1,
+                            col: from.col + 1
+                        };
+                        return true;
+                    }
+                    if (from.col === to.col + 2) {
+                        this.skippedPosition = {
+                            row: from.row - 1,
+                            col: from.col - 1
+                        };
+                        return true;
+                    }
 
-              }
-          } else if (this.pieceSelected.isKing) {
-              if (to.row > from.row) {
-                  if (from.col === to.col - 2) {
-                      this.skippedPosition = {
-                          row: from.row + 1,
-                          col: from.col +1
-                      };
-                      return true;
+                }
+            } else if (this.pieceSelected.isKing) {
+                if (to.row > from.row) {
+                    if (from.col === to.col - 2) {
+                        this.skippedPosition = {
+                            row: from.row + 1,
+                            col: from.col + 1
+                        };
+                        return true;
 
-                  } else if (from.col === to.col + 2) {
-                      this.skippedPosition = {
-                          row: from.row + 1,
-                          col: from.col -1
-                      };
-                      return true;
+                    } else if (from.col === to.col + 2) {
+                        this.skippedPosition = {
+                            row: from.row + 1,
+                            col: from.col - 1
+                        };
+                        return true;
 
-                  }
-              } else if (to.row < from.row) {
-                  if (from.col === to.col - 2) {
-                      this.skippedPosition = {
-                          row: from.row - 1,
-                          col: from.col + 1
-                      };
-                      return true;
+                    }
+                } else if (to.row < from.row) {
+                    if (from.col === to.col - 2) {
+                        this.skippedPosition = {
+                            row: from.row - 1,
+                            col: from.col + 1
+                        };
+                        return true;
 
-                  } else if (from.col === to.col + 2) {
-                      this.skippedPosition = {
-                          row: from.row - 1,
-                          col: from.col - 1
-                      };
-                      return true;
+                    } else if (from.col === to.col + 2) {
+                        this.skippedPosition = {
+                            row: from.row - 1,
+                            col: from.col - 1
+                        };
+                        return true;
 
-                  }
+                    }
 
-              }
-          }
-      
-    } else if (this.pieceSelected.color === 'black') {
-          if (!this.pieceSelected.isKing) {
-              if (to.row > from.row) {
-                  if (from.col === to.col - 2) {
-                      this.skippedPosition = {
-                          row: from.row + 1,
-                          col: from.col + 1
-                      };
-                      return true;
-                  }
-                  if (from.col === to.col + 2) {
-                      this.skippedPosition = {
-                          row: from.row + 1,
-                          col: from.col - 1
-                      };
-                      return true;
-                  }
-              } else if (to.row < from.row) {
-                  if (from.col === to.col - 2) {
-                      this.skippedPosition = {
-                          row: from.row - 1,
-                          col: from.col + 1
-                      };
-                      return true;
-                  }
-                  if (from.col === to.col + 2) {
-                      this.skippedPosition = {
-                          row: from.row - 1,
-                          col: from.col - 1
-                      };
-                      return true;
-                  }
+                }
+            }
 
-              }
-          } else if (this.pieceSelected.isKing) {
-              if (to.row > from.row) {
-                  if (from.col === to.col - 2) {
-                      this.skippedPosition = {
-                          row: from.row + 1,
-                          col: from.col + 1
-                      };
-                      return true;
+        } else if (this.pieceSelected.color === 'black') {
+            if (!this.pieceSelected.isKing) {
+                if (to.row > from.row) {
+                    if (from.col === to.col - 2) {
+                        this.skippedPosition = {
+                            row: from.row + 1,
+                            col: from.col + 1
+                        };
+                        return true;
+                    }
+                    if (from.col === to.col + 2) {
+                        this.skippedPosition = {
+                            row: from.row + 1,
+                            col: from.col - 1
+                        };
+                        return true;
+                    }
+                } else if (to.row < from.row) {
+                    if (from.col === to.col - 2) {
+                        this.skippedPosition = {
+                            row: from.row - 1,
+                            col: from.col + 1
+                        };
+                        return true;
+                    }
+                    if (from.col === to.col + 2) {
+                        this.skippedPosition = {
+                            row: from.row - 1,
+                            col: from.col - 1
+                        };
+                        return true;
+                    }
 
-                  } else if (from.col === to.col + 2) {
-                      this.skippedPosition = {
-                          row: from.row + 1,
-                          col: from.col - 1
-                      };
-                      return true;
+                }
+            } else if (this.pieceSelected.isKing) {
+                if (to.row > from.row) {
+                    if (from.col === to.col - 2) {
+                        this.skippedPosition = {
+                            row: from.row + 1,
+                            col: from.col + 1
+                        };
+                        return true;
 
-                  }
-              } else if (to.row < from.row) {
-                  if (from.col === to.col - 2) {
-                      this.skippedPosition = {
-                          row: from.row - 1,
-                          col: from.col + 1
-                      };
-                      return true;
+                    } else if (from.col === to.col + 2) {
+                        this.skippedPosition = {
+                            row: from.row + 1,
+                            col: from.col - 1
+                        };
+                        return true;
 
-                  } else if (from.col === to.col + 2) {
-                      this.skippedPosition = {
-                          row: from.row - 1,
-                          col: from.col - 1
-                      };
-                      return true;
+                    }
+                } else if (to.row < from.row) {
+                    if (from.col === to.col - 2) {
+                        this.skippedPosition = {
+                            row: from.row - 1,
+                            col: from.col + 1
+                        };
+                        return true;
 
-                  }
+                    } else if (from.col === to.col + 2) {
+                        this.skippedPosition = {
+                            row: from.row - 1,
+                            col: from.col - 1
+                        };
+                        return true;
 
-              }
-          }
+                    }
+
+                }
+            }
+        }
+        return false;
+
     }
-    return false;
-
-  }
 
     public isValidMove(from: Position, to: Position): boolean {
-    const checkIfSpaceEmpty = this.findEmptySpace(to.row, to.col);
-    this.pieceSelected = this.findSelectedPiece(from.row, from.col);
-      if (this.pieceSelected.isKing === false) {
-          this.isKing = this.findIfKing(this.pieceSelected, to.row);
-    }
-    if (!checkIfSpaceEmpty) {
-      return false;
-    }
-      if (this.pieceSelected.color === 'red') {
-          if (!this.pieceSelected.isKing) {
-              if (to.row > from.row) {
-                  if (from.col === to.col - 1 || from.col === to.col + 1) {
-                      return true;
-                  }
-              }
-          } else if (this.pieceSelected.isKing) {
-              if (to.row > from.row || to.row < from.row) {
-                  if (from.col === to.col - 1 || from.col === to.col + 1) {
-                      return true;
-                  }
-              }
-          }
-      } else if (this.pieceSelected.color === 'black') {
-          if (!this.pieceSelected.isKing) {
-              if (to.row < from.row) {
-                  if (from.col === to.col - 1 || from.col === to.col + 1) {
-                      return true;
-                  }
-              }
-   
-          } else if (this.pieceSelected.isKing) {
-        if (to.row < from.row || to.row > from.row) {
-          if (from.col === to.col - 1 || from.col === to.col + 1) {
-            return true;
-          }
+        const checkIfSpaceEmpty = this.findEmptySpace(to.row, to.col);
+        this.pieceSelected = this.findSelectedPiece(from.row, from.col);
+        if (this.pieceSelected.isKing === false) {
+            this.isKing = this.findIfKing(this.pieceSelected, to.row);
         }
-      }
+        if (!checkIfSpaceEmpty) {
+            return false;
+        }
+        if (this.pieceSelected.color === 'red') {
+            if (!this.pieceSelected.isKing) {
+                if (to.row > from.row) {
+                    if (from.col === to.col - 1 || from.col === to.col + 1) {
+                        return true;
+                    }
+                }
+            } else if (this.pieceSelected.isKing) {
+                if (to.row > from.row || to.row < from.row) {
+                    if (from.col === to.col - 1 || from.col === to.col + 1) {
+                        return true;
+                    }
+                }
+            }
+        } else if (this.pieceSelected.color === 'black') {
+            if (!this.pieceSelected.isKing) {
+                if (to.row < from.row) {
+                    if (from.col === to.col - 1 || from.col === to.col + 1) {
+                        return true;
+                    }
+                }
+
+            } else if (this.pieceSelected.isKing) {
+                if (to.row < from.row || to.row > from.row) {
+                    if (from.col === to.col - 1 || from.col === to.col + 1) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
-    return false;
-  }
 }

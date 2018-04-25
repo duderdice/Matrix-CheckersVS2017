@@ -6,7 +6,7 @@ import { Point } from '../models/point';
 import { DISPLAY_POINTS, ADD_POINTS } from '../stores/point.store';
 
 @Injectable()
-export class PointStateActions {
+export class PointActions {
     private pieces: Array<Point >;
 
     constructor(

@@ -22,31 +22,28 @@ export class AppStartUpActions {
     ) { }
 
     public initializeGame(): void {
-        const piecesReq = new HttpRequest(REQUEST_TYPE_GET, `${"http://localhost:60118/api"}/pieces`);
-       
+        const piecesReq = new HttpRequest(REQUEST_TYPE_GET, `${Constants.ApiBaseUrl}/pieces`);
+
         this._api.callApiService<Piece[]>(piecesReq)
             .subscribe(
             (pieces: Array<Piece>) => {
-                    this._store.dispatch({ type: DISPLAY_PIECES, payload: pieces });
-                },
-                (err) => {
-                    this._store.dispatch({ type: DISPLAY_PIECES, payload: [] });
+                this._store.dispatch({ type: DISPLAY_PIECES, payload: pieces });
             },
-                ()=>
-                {
-                    
-            }
-            );
+            (err) => {
+                this._store.dispatch({ type: DISPLAY_PIECES, payload: [] });
+            },
+
+        );
     }
 
-      
+
     public initializeSquares(): void {
-        const squaresReq = new HttpRequest(REQUEST_TYPE_GET, `${"http://localhost:60118/api"}/squares`);
+        const squaresReq = new HttpRequest(REQUEST_TYPE_GET, `${Constants.ApiBaseUrl}/squares`);
         this._api.callApiService<Square[]>(squaresReq)
             .subscribe(
             (squares: Array<Square>) => {
                 this._store.dispatch({ type: DISPLAY_SQUARES, payload: squares });
-              
+
             },
             (err) => {
                 this._store.dispatch({ type: DISPLAY_SQUARES, payload: [] });
@@ -55,7 +52,7 @@ export class AppStartUpActions {
     }
 
     public initializeScores(): void {
-        const pointsReq = new HttpRequest(REQUEST_TYPE_GET, `${"http://localhost:60118/api"}/points`);
+        const pointsReq = new HttpRequest(REQUEST_TYPE_GET, `${Constants.ApiBaseUrl}/points`);
         this._api.callApiService<Point[]>(pointsReq)
             .subscribe(
             (points: Array<Point>) => {

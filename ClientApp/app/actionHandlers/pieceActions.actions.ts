@@ -6,12 +6,16 @@ import { Piece } from '../models/piece';
 import { DISPLAY_PIECES, MOVE_PIECES, JUMP_PIECES, MAKE_KING } from '../stores/pieces.store';
 
 @Injectable()
-export class PieceStateActions {
+export class PieceActions {
     private pieces: Array<Piece>;
 
     constructor(
         private _store: Store<any>,
     ) { }
+
+    public moveTest(): void{
+
+    }
 
     public move(from: any, to: any): void {
         this._store.dispatch({

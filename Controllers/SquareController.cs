@@ -12,7 +12,7 @@ namespace DemoApp.Controllers
     [Route("api/[controller]")]
     public class SquaresController : Controller
     {
-        public Square[] Squares = new Square[] {
+        Square[] Squares = new Square[] {
                 new Square()
                 {
                     id= 0,
@@ -415,6 +415,12 @@ namespace DemoApp.Controllers
         {
             return Squares;
 
+        }
+        [HttpGet("{moves}")]
+        public IActionResult GetMoves()
+        {
+
+            return Content("blue");
         }
     }
 }

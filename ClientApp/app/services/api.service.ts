@@ -22,11 +22,11 @@ export class ApiService {
     ) { }
 
     public callApiService<T>(req: HttpRequest<any>): Observable<T> {
-        let response : any;
+        let response: any;
         switch (req.method) {
 
             case REQUEST_TYPE_GET:
-               return this._http
+                return this._http
                     .get<T>(req.url)
                     .map(res => {
                         response = res;
@@ -35,32 +35,6 @@ export class ApiService {
                     err => {
                         return Observable.throw(err)
                     });
-                      
-
-          
-            //case REQUEST_TYPE_GET:
-            //   return this._http
-            //        .get<T>(req.url)
-            //        .subscribe(
-            //        res => {
-            //            response = res;
-            //            return response;
-            //        },
-            //        err => {
-            //            response = err;
-            //            return response;
-            //        }
-            //        );
-              
-
-            //case REQUEST_TYPE_GET:
-            //         this._http
-            //        .get<T>(req.url)
-              
-                                     
-            //    return this._http.get<T>(req.url);
-
-     
         }
         return Observable.of(response);
     }
