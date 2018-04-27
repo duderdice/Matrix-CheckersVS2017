@@ -134,7 +134,6 @@ export class GameBoardComponent implements OnInit {
                     this.addingPoints();
                     this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
                 } else if (this.isValidMove(this.originalPosition, { row, column })) {
-                    debugger;
                     this._pieceActions.move(this.originalPosition, { row, column });
                     this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
                 }
@@ -212,7 +211,7 @@ export class GameBoardComponent implements OnInit {
                     } else if (from.column === to.column + 2) {
                         this.skippedPosition = {
                             row: from.row - 1,
-                            column: from.column- 1
+                            column: from.column - 1
                         };
                         return true;
 

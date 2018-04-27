@@ -15,7 +15,6 @@ export class PieceActions {
 
     public move(from: any, to: any): void {
         this._store.dispatch({
-       
             type: MOVE_PIECES,
             origin: from,
             destination: to

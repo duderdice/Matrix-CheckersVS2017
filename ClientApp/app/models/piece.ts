@@ -1,8 +1,3 @@
-//export enum Piece {
-//    NONE,
-//    RED,
-//    BLACK
-//}
 export class Piece {
     id: number;
     row: number;
