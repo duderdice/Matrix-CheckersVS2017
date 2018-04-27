@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { Piece } from '../../models/game-piece';
-import { Square } from '../../models/square';
+import { Square } from '../../models/gameBoard';
 import { Point } from '../../models/point';
 import { Position } from '../../models/position';
 import { PieceActions } from '../../actionHandlers/pieceActions.actions';
@@ -44,7 +44,7 @@ export class GameBoardComponent implements OnInit {
     constructor(
         private _store: Store<any>,
         private _pieceActions: PieceActions,
-        private _gameBoardActions: GameBoardActions,
+        private _squareActions: GameBoardActions,
         private _pointActions: PointActions,
         private _appStateActions: AppStateActions
     ) { }
@@ -116,28 +116,28 @@ export class GameBoardComponent implements OnInit {
         }
     }
 
-    public moveSelected(row: number, col: number): void {
+    public moveSelected(row: number, column: number): void {
         if (!this.isMoving) {
-            this.originalPosition = { row, col };
-            this.pieceSelected = this.findSelectedPiece(this.originalPosition.row, this.originalPosition.col);
+            this.originalPosition = { row, column };
+            this.pieceSelected = this.findSelectedPiece(this.originalPosition.row, this.originalPosition.column);
             if (this.pieceSelected.color === this.currentPlayer) {
                 if (!this.pieceSelected.isKing) {
-                    this._gameBoardActions.availableMoves(this.originalPosition, this.pieceSelected);
+                    this._squareActions.availableMoves(this.originalPosition, this.pieceSelected);
                 }
                 this._appStateActions.updateState({ 'player.isMoving': true });
             }
         } else {
             if (this.pieceSelected.color === this.currentPlayer) {
-                if (this.isAJump(this.originalPosition, { row, col })) {
-                    this._pieceActions.jump(this.originalPosition, { row, col }, this.skippedPosition);
+                if (this.isAJump(this.originalPosition, { row, column })) {
+                    this._pieceActions.jump(this.originalPosition, { row, column }, this.skippedPosition);
                     this._pointActions.addPoint(this.pieceSelected.color);
                     this.addingPoints();
                     this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
-                } else if (this.isValidMove(this.originalPosition, { row, col })) {
-                    this._pieceActions.move(this.originalPosition, { row, col });
+                } else if (this.isValidMove(this.originalPosition, { row, column })) {
+                    this._pieceActions.move(this.originalPosition, { row, column });
                     this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
                 }
-                this._gameBoardActions.unhighlightSquares();
+                this._squareActions.unhighlightSquares();
                 this._appStateActions.updateState({ 'player.isMoving': false });
             } else {
                 this._appStateActions.updateState({ 'player.isMoving': false });
@@ -148,36 +148,36 @@ export class GameBoardComponent implements OnInit {
 
 
     public isAJump(from: Position, to: Position): boolean {
-        this.pieceSelected = this.findSelectedPiece(from.row, from.col);
+        this.pieceSelected = this.findSelectedPiece(from.row, from.column);
         if (this.pieceSelected.color === 'red') {
             if (!this.pieceSelected.isKing) {
                 if (to.row > from.row) {
-                    if (from.col === to.col - 2) {
+                    if (from.column === to.column - 2) {
                         this.skippedPosition = {
                             row: from.row + 1,
-                            col: from.col + 1
+                            column: from.column + 1
                         };
                         return true;
                     }
-                    if (from.col === to.col + 2) {
+                    if (from.column === to.column + 2) {
                         this.skippedPosition = {
                             row: from.row + 1,
-                            col: from.col - 1
+                            column: from.column - 1
                         };
                         return true;
                     }
                 } else if (to.row < from.row) {
-                    if (from.col === to.col - 2) {
+                    if (from.column === to.column - 2) {
                         this.skippedPosition = {
                             row: from.row - 1,
-                            col: from.col + 1
+                            column: from.column + 1
                         };
                         return true;
                     }
-                    if (from.col === to.col + 2) {
+                    if (from.column === to.column + 2) {
                         this.skippedPosition = {
                             row: from.row - 1,
-                            col: from.col - 1
+                            column: from.column - 1
                         };
                         return true;
                     }
@@ -185,33 +185,33 @@ export class GameBoardComponent implements OnInit {
                 }
             } else if (this.pieceSelected.isKing) {
                 if (to.row > from.row) {
-                    if (from.col === to.col - 2) {
+                    if (from.column === to.column - 2) {
                         this.skippedPosition = {
                             row: from.row + 1,
-                            col: from.col + 1
+                            column: from.column + 1
                         };
                         return true;
 
-                    } else if (from.col === to.col + 2) {
+                    } else if (from.column === to.column + 2) {
                         this.skippedPosition = {
                             row: from.row + 1,
-                            col: from.col - 1
+                            column: from.column - 1
                         };
                         return true;
 
                     }
                 } else if (to.row < from.row) {
-                    if (from.col === to.col - 2) {
+                    if (from.column === to.column - 2) {
                         this.skippedPosition = {
                             row: from.row - 1,
-                            col: from.col + 1
+                            column: from.column + 1
                         };
                         return true;
 
-                    } else if (from.col === to.col + 2) {
+                    } else if (from.column === to.column + 2) {
                         this.skippedPosition = {
                             row: from.row - 1,
-                            col: from.col - 1
+                            column: from.column - 1
                         };
                         return true;
 
@@ -223,32 +223,32 @@ export class GameBoardComponent implements OnInit {
         } else if (this.pieceSelected.color === 'black') {
             if (!this.pieceSelected.isKing) {
                 if (to.row > from.row) {
-                    if (from.col === to.col - 2) {
+                    if (from.column === to.column - 2) {
                         this.skippedPosition = {
                             row: from.row + 1,
-                            col: from.col + 1
+                            column: from.column + 1
                         };
                         return true;
                     }
-                    if (from.col === to.col + 2) {
+                    if (from.column === to.column + 2) {
                         this.skippedPosition = {
                             row: from.row + 1,
-                            col: from.col - 1
+                            column: from.column - 1
                         };
                         return true;
                     }
                 } else if (to.row < from.row) {
-                    if (from.col === to.col - 2) {
+                    if (from.column === to.column - 2) {
                         this.skippedPosition = {
                             row: from.row - 1,
-                            col: from.col + 1
+                            column: from.column + 1
                         };
                         return true;
                     }
-                    if (from.col === to.col + 2) {
+                    if (from.column === to.column + 2) {
                         this.skippedPosition = {
                             row: from.row - 1,
-                            col: from.col - 1
+                            column: from.column - 1
                         };
                         return true;
                     }
@@ -256,33 +256,33 @@ export class GameBoardComponent implements OnInit {
                 }
             } else if (this.pieceSelected.isKing) {
                 if (to.row > from.row) {
-                    if (from.col === to.col - 2) {
+                    if (from.column === to.column - 2) {
                         this.skippedPosition = {
                             row: from.row + 1,
-                            col: from.col + 1
+                            column: from.column + 1
                         };
                         return true;
 
-                    } else if (from.col === to.col + 2) {
+                    } else if (from.column === to.column + 2) {
                         this.skippedPosition = {
                             row: from.row + 1,
-                            col: from.col - 1
+                            column: from.column - 1
                         };
                         return true;
 
                     }
                 } else if (to.row < from.row) {
-                    if (from.col === to.col - 2) {
+                    if (from.column === to.column - 2) {
                         this.skippedPosition = {
                             row: from.row - 1,
-                            col: from.col + 1
+                            column: from.column + 1
                         };
                         return true;
 
-                    } else if (from.col === to.col + 2) {
+                    } else if (from.column === to.column + 2) {
                         this.skippedPosition = {
                             row: from.row - 1,
-                            col: from.col - 1
+                            column: from.column - 1
                         };
                         return true;
 
@@ -296,8 +296,8 @@ export class GameBoardComponent implements OnInit {
     }
 
     public isValidMove(from: Position, to: Position): boolean {
-        const checkIfSpaceEmpty = this.findEmptySpace(to.row, to.col);
-        this.pieceSelected = this.findSelectedPiece(from.row, from.col);
+        const checkIfSpaceEmpty = this.findEmptySpace(to.row, to.column);
+        this.pieceSelected = this.findSelectedPiece(from.row, from.column);
         if (this.pieceSelected.isKing === false) {
             this.isKing = this.findIfKing(this.pieceSelected, to.row);
         }
@@ -307,13 +307,13 @@ export class GameBoardComponent implements OnInit {
         if (this.pieceSelected.color === 'red') {
             if (!this.pieceSelected.isKing) {
                 if (to.row > from.row) {
-                    if (from.col === to.col - 1 || from.col === to.col + 1) {
+                    if (from.column === to.column - 1 || from.column === to.column + 1) {
                         return true;
                     }
                 }
             } else if (this.pieceSelected.isKing) {
                 if (to.row > from.row || to.row < from.row) {
-                    if (from.col === to.col - 1 || from.col === to.col + 1) {
+                    if (from.column === to.column - 1 || from.column === to.column + 1) {
                         return true;
                     }
                 }
@@ -321,14 +321,14 @@ export class GameBoardComponent implements OnInit {
         } else if (this.pieceSelected.color === 'black') {
             if (!this.pieceSelected.isKing) {
                 if (to.row < from.row) {
-                    if (from.col === to.col - 1 || from.col === to.col + 1) {
+                    if (from.column === to.column - 1 || from.column === to.column + 1) {
                         return true;
                     }
                 }
 
             } else if (this.pieceSelected.isKing) {
                 if (to.row < from.row || to.row > from.row) {
-                    if (from.col === to.col - 1 || from.col === to.col + 1) {
+                    if (from.column === to.column - 1 || from.column === to.column + 1) {
                         return true;
                     }
                 }

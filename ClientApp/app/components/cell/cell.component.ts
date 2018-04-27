@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Piece } from '../../models/game-piece';
 import { Store } from '@ngrx/store';
-import { Square } from '../../models/square';
+import { Square } from '../../models/gameBoard';
 
 @Component({
   selector: 'app-cell',

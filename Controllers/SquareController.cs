@@ -4,8 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DemoApp.Models;
-
-// For more information on enabling MVC for empty projects, visit https=//go.microsoft.com/fwlink/?LinkID=397860
+using System.Collections.Specialized;
 
 namespace DemoApp.Controllers
 {
@@ -408,19 +407,41 @@ namespace DemoApp.Controllers
 
                 }
         };
-
+        public Piece selectedPiece;
+        public int rowNumber;
+        public int colNumber;
+        public string pieceColor;
+        public Position Position;
 
         [HttpGet]
         public IEnumerable<Square> GetSquares()
         {
             return Squares;
-
         }
-        [HttpGet("{moves}")]
-        public IActionResult GetMoves()
+        [HttpGet("moves")]
+        public IEnumerable<Position> GetMoves(int row, int col, string color)
         {
-
-            return Content("blue");
+            rowNumber = row;
+            colNumber = col;
+            pieceColor = color;
+            if (pieceColor == "red")
+            {
+                Position availablePositionOne = new Position(rowNumber + 1, colNumber + 1);
+                Position availablepositiontwo = new Position(rowNumber + 1, colNumber - 1);
+                Position[] availableMoves = new Position[] { availablePositionOne, availablepositiontwo };
+                return (availableMoves);
+            }
+            else if (pieceColor == "black")
+            {
+                Position availablePositionOne = new Position(rowNumber - 1, colNumber + 1);
+                Position availablepositiontwo = new Position(rowNumber - 1, colNumber - 1);
+                Position[] availableMoves = new Position[] { availablePositionOne, availablepositiontwo };
+                return (availableMoves);
+            }
+            Position testPosition = new Position(1, 1);
+            Position[] test = new Position[] { testPosition };
+            return test;
         }
+
     }
 }

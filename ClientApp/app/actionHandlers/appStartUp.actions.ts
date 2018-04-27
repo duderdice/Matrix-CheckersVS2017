@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { Piece } from '../models/game-piece';
-import { Square } from '../models/square';
+import { Square } from '../models/gameBoard';
 import { Point } from '../models/point';
 import { DISPLAY_PIECES } from '../stores/pieces.store';
-import { DISPLAY_SQUARES } from '../stores/squares.store';
+import { DISPLAY_SQUARES } from '../stores/gameBoard.store';
 import { DISPLAY_POINTS } from '../stores/point.store';
 import * as Constants from '../constants/constants';
 import { ApiService, REQUEST_TYPE_GET } from '../services/api.service';
