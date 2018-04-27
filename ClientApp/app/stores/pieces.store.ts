@@ -16,16 +16,16 @@ export class DisplayPieceAction implements Action {
 
 export class MovePieceAction implements Action {
     readonly type = MOVE_PIECES;
-    origin: { row: number, col: number };
-    destination: { row: number, col: number };
+    origin: { row: number, column: number };
+    destination: { row: number, column: number };
 }
 
 export class JumpPieceAction implements Action {
     readonly type = JUMP_PIECES;
     // payload: Array<Piece>;
-    origin: { row: number, col: number };
-    destination: { row: number, col: number };
-    skipped: { row: number, col: number };
+    origin: { row: number, column: number };
+    destination: { row: number, column: number };
+    skipped: { row: number, column: number };
 }
 
 export class MakeKingAction implements Action {
@@ -43,20 +43,20 @@ export function pieces(state: State = [], action: Actions): State {
 
         case MOVE_PIECES:
             const piece = state.find((p) => {
-                if (p.row === action.origin.row && p.col === action.origin.col) {
+                if (p.row === action.origin.row && p.col === action.origin.column) {
                     return true;
                 }
                 return false;
             });
             if (piece) {
                 piece.row = action.destination.row;
-                piece.col = action.destination.col;
+                piece.col = action.destination.column;
             }
             return state;
 
         case JUMP_PIECES:
             const skippedPiece = state.find((p) => {
-                if (p.row === action.skipped.row && p.col === action.skipped.col) {
+                if (p.row === action.skipped.row && p.col === action.skipped.column) {
                     return true;
                 }
                 return false;

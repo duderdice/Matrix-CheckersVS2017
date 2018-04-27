@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Square } from '../models/square';
+import { Position } from '../models/position';
 
 
 export type State = Array<Square>;
@@ -16,11 +17,9 @@ export class DisplaySquareAction implements Action {
 
 export class HighlightSquareAction implements Action {
     readonly type = HIGHLIGHT_SQUARES;
-    payload: {
-        firstOption: { row: number, col: number };
-        secondOption: { row: number, col: number };
-    };
-}
+    payload: Array<Position>;
+    }
+
 
 export class UnhighlightSquareAction implements Action {
     readonly type = UNHIGHLIGHT_SQUARES;
@@ -35,9 +34,8 @@ export function squares(state: State=[], action: Actions): State {
             return action.payload;
 
         case HIGHLIGHT_SQUARES:
-
-            markSquare(state, action.payload.firstOption);
-            markSquare(state, action.payload.secondOption);
+            markSquare(state, action.payload[0]);
+            markSquare(state, action.payload[1]);
 
             return state;
 
@@ -50,9 +48,9 @@ export function squares(state: State=[], action: Actions): State {
             return state;
     }
 }
-function markSquare(state: State, position: { row: number, col: number }): void {
-    const square = state.find((s) => {
-        if (s.row === position.row && s.col === position.col) {
+function markSquare(state: State, position: { row: number, column: number }): void {
+       const square = state.find((s) => {
+        if (s.row === position.row && s.col === position.column) {
             return true;
         }
         return false;
