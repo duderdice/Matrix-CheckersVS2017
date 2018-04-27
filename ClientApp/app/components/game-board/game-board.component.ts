@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { Piece } from '../../models/game-piece';
-import { Square } from '../../models/square';
+import { Square } from '../../models/gameBoard';
 import { Point } from '../../models/point';
 import { Position } from '../../models/position';
 import { PieceActions } from '../../actionHandlers/pieceActions.actions';

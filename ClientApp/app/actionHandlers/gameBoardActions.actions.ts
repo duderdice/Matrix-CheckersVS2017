@@ -2,12 +2,12 @@ import { HttpErrorResponse, HttpRequest, HttpResponse, HttpParams } from '@angul
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { Square } from '../models/square';
+import { Square } from '../models/gameBoard';
 import { Piece } from '../models/piece';
 import { Position } from '../models/position';
 import * as Constants from '../constants/constants';
 import { ApiService, REQUEST_TYPE_GET } from '../services/api.service';
-import { HIGHLIGHT_SQUARES, UNHIGHLIGHT_SQUARES } from '../stores/squares.store';
+import { HIGHLIGHT_SQUARES, UNHIGHLIGHT_SQUARES } from '../stores/gameBoard.store';
 import { pieces } from '../stores/pieces.store';
 
 @Injectable()

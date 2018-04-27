@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Square } from '../models/square';
+import { Square } from '../models/gameBoard';
 import { Position } from '../models/position';
 
 export type State = Array<Square>;

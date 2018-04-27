@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using DemoApp.Models;
 using System.Collections.Specialized;
 
-// For more information on enabling MVC for empty projects, visit https=//go.microsoft.com/fwlink/?LinkID=397860
-
 namespace DemoApp.Controllers
 {
     [Route("api/[controller]")]
@@ -415,14 +413,10 @@ namespace DemoApp.Controllers
         public string pieceColor;
         public Position Position;
 
-
-
-
         [HttpGet]
         public IEnumerable<Square> GetSquares()
         {
             return Squares;
-
         }
         [HttpGet("moves")]
         public IEnumerable<Position> GetMoves(int row, int col, string color)
@@ -444,11 +438,9 @@ namespace DemoApp.Controllers
                 Position[] availableMoves = new Position[] { availablePositionOne, availablepositiontwo };
                 return (availableMoves);
             }
-            Position testPosition = new Position(1,  1);
+            Position testPosition = new Position(1, 1);
             Position[] test = new Position[] { testPosition };
             return test;
-
-
         }
 
     }

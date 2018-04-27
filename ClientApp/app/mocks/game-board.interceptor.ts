@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
 import * as Constants from '../constants/constants';
-import { Square } from '../models/square';
+import { Square } from '../models/gameBoard';
 
 @Injectable()
 export class ABC {}
