@@ -13,6 +13,15 @@
            return false;
        }
 
+       public findEmptySpace(row: number, col: number, pieces: Array<Piece>): boolean | undefined {
+           for (let i = 0; i < pieces.length; i++) {
+               if (pieces[i].row !== row && pieces[i].col !== col) {
+                   return true;
+               }
+           }
+       }
+
+
 
     }
 

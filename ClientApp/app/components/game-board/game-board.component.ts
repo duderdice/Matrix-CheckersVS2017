@@ -30,7 +30,7 @@ export class GameBoardComponent implements OnInit {
     public selectedPiece: number;
     public isMoving = false;
     public originalPosition: Position;
-    public currentPlayer = 'red';
+    public currentlyPlayingColor = 'red';
     public skippedPosition: Position;
     public availablePositionOne: Position;
     public availablePositionTwo: Position;
@@ -66,6 +66,13 @@ export class GameBoardComponent implements OnInit {
         this.appStateSubscription.unsubscribe();
     }
 
+    public pieceSelectedisCurrentPlayer(): boolean {
+        if (this.pieceSelected.color === this.currentlyPlayingColor) {
+            return true;
+        }
+        return false;
+    }
+
     public findPiece(row: number, col: number): Piece | undefined {
         return this.pieces.find((piece) => {
             if (piece.row === row && piece.col === col) {
@@ -78,25 +85,6 @@ export class GameBoardComponent implements OnInit {
 
     public findSquare(row: number, col: number): Square | undefined {
         return this.squares.find((square) => (square.row === row && square.col === col));
-    }
-
-    //public findSelectedPiece(row: number, col: number): Piece | false {
-    //    for (let i = 0; i < this.pieces.length; i++) {
-    //        if (this.pieces[i].row === row && this.pieces[i].col === col) {
-    //            const requiredPiece = this.pieces[i];
-    //            return requiredPiece;
-    //        }
-
-    //    }
-    //    return false;
-    //}
-
-    public findEmptySpace(row: number, col: number): boolean | undefined {
-        for (let i = 0; i < this.pieces.length; i++) {
-            if (this.pieces[i].row !== row && this.pieces[i].col !== col) {
-                return true;
-            }
-        }
     }
 
     public findIfKing(piece: Piece, row: number): boolean {
@@ -122,22 +110,22 @@ export class GameBoardComponent implements OnInit {
         if (!this.isMoving) {
             this.originalPosition = { row, column };
             this.pieceSelected = this._helper.findSelectedPiece(this.originalPosition.row, this.originalPosition.column, this.pieces);
-            if (this.pieceSelected.color === this.currentPlayer) {
+            if (this.pieceSelectedisCurrentPlayer()) {
                 if (!this.pieceSelected.isKing) {
                     this._squareActions.availableMoves(this.originalPosition, this.pieceSelected);
                 }
                 this._appStateActions.updateState({ 'player.isMoving': true });
             }
         } else {
-            if (this.pieceSelected.color === this.currentPlayer) {
+            if (this.pieceSelectedisCurrentPlayer()) {
                 if (this.isAJump(this.originalPosition, { row, column })) {
                     this._pieceActions.jump(this.originalPosition, { row, column }, this.skippedPosition);
                     this._pointActions.addPoint(this.pieceSelected.color);
                     this.addingPoints();
-                    this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
+                    this.currentlyPlayingColor = this.currentlyPlayingColor === 'red' ? 'black' : 'red';
                 } else if (this.isValidMove(this.originalPosition, { row, column })) {
                     this._pieceActions.move(this.originalPosition, { row, column });
-                    this.currentPlayer = this.currentPlayer === 'red' ? 'black' : 'red';
+                    this.currentlyPlayingColor = this.currentlyPlayingColor === 'red' ? 'black' : 'red';
                 }
                 this._squareActions.unhighlightSquares();
                 this._appStateActions.updateState({ 'player.isMoving': false });
@@ -298,7 +286,7 @@ export class GameBoardComponent implements OnInit {
     }
 
     public isValidMove(from: Position, to: Position): boolean {
-        const checkIfSpaceEmpty = this.findEmptySpace(to.row, to.column);
+        const checkIfSpaceEmpty = this._helper.findEmptySpace(to.row, to.column, this.pieces);
         this.pieceSelected = this._helper.findSelectedPiece(from.row, from.column, this.pieces);
         if (this.pieceSelected.isKing === false) {
             this.isKing = this.findIfKing(this.pieceSelected, to.row);
