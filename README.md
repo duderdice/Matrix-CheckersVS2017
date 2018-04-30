@@ -1,6 +1,7 @@
 # Matrix-CheckersVS2017
 Checkers app showing Angular apps in Visual Studio 2017
  ## Goals for the week:
+
 	#### Move "find*" functions from Game Board component to Helper methods.
 
 	#### Move "isValid" function from Game Board component to Action-Handler.
@@ -15,6 +16,9 @@ Checkers app showing Angular apps in Visual Studio 2017
 
 	#### Rename the variables(square) to be more specific to their purpose.
 	 
- 
+ | Heading 1 | Heading 2 | Heading 3 |  
+|-----------|:-----------:|-----------:|  
+| Cell A1 | Cell A2 | Cell A3 |  
+| Cell B1 | Cell B2 | Cell B3
  
 
