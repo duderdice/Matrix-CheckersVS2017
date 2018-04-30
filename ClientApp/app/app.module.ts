@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 
 import { APP_ACTION_HANDLERS } from './app.actionHandlers';
+import { APP_HELPERS } from './app.helpers';
 import { APP_STORES } from './app.stores';
 import { APP_SERVICES } from './app.services';
 import { APP_MOCK_INTERCEPTORS } from './app.mock.interceptors';
@@ -19,25 +20,26 @@ import { ScoreBoardComponent } from './components/score-board/score-board.compon
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    CellComponent,
-    GameBoardComponent,
-    PieceComponent
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    StoreModule.forRoot(APP_STORES)
-  ],
-  providers: [
-    ...APP_ACTION_HANDLERS,
-    ...APP_SERVICES,
-    ...(environment.useMocking ? APP_MOCK_INTERCEPTORS : [])
-  ],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        CellComponent,
+        GameBoardComponent,
+        PieceComponent
+    ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        StoreModule.forRoot(APP_STORES)
+    ],
+    providers: [
+        ...APP_ACTION_HANDLERS,
+        ...APP_HELPERS,
+        ...APP_SERVICES,
+        ...(environment.useMocking ? APP_MOCK_INTERCEPTORS : [])
+    ],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
