@@ -87,17 +87,6 @@ export class GameBoardComponent implements OnInit {
         return this.squares.find((square) => (square.row === row && square.col === col));
     }
 
-    public findIfKing(piece: Piece, row: number): boolean {
-        if (piece.color === 'red' && row === 7) {
-            this._pieceActions.makeKing(piece);
-            return true;
-        } else if (piece.color === 'black' && row === 0) {
-            this._pieceActions.makeKing(piece);
-            return true;
-        }
-        return false;
-    }
-
     public addingPoints(): void {
         if (this.pieceSelected.color === 'red') {
             this.scoreRed = Array(this.points[0].count).fill('1');
@@ -288,8 +277,10 @@ export class GameBoardComponent implements OnInit {
     public isValidMove(from: Position, to: Position): boolean {
         const checkIfSpaceEmpty = this._helper.findEmptySpace(to.row, to.column, this.pieces);
         this.pieceSelected = this._helper.findSelectedPiece(from.row, from.column, this.pieces);
-        if (this.pieceSelected.isKing === false) {
-            this.isKing = this.findIfKing(this.pieceSelected, to.row);
+        if (!this.pieceSelected.isKing ) {
+            if (this._helper.checkIfPieceSelectedCanBeKing(this.pieceSelected, to.row)) {
+                this._pieceActions.makeKing(this.pieceSelected);
+            }
         }
         if (!checkIfSpaceEmpty) {
             return false;
