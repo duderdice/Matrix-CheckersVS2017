@@ -117,10 +117,8 @@ export class GameBoardComponent implements OnInit {
                     this.currentlyPlayingColor = this.currentlyPlayingColor === 'red' ? 'black' : 'red';
                 }
                 this._squareActions.unhighlightSquares();
-                this._appStateActions.updateState({ 'player.isMoving': false });
-            } else {
-                this._appStateActions.updateState({ 'player.isMoving': false });
             }
+            this._appStateActions.updateState({ 'player.isMoving': false });
         }
     }
 
@@ -277,7 +275,7 @@ export class GameBoardComponent implements OnInit {
     public isValidMove(from: Position, to: Position): boolean {
         const checkIfSpaceEmpty = this._helper.findEmptySpace(to.row, to.column, this.pieces);
         this.pieceSelected = this._helper.findSelectedPiece(from.row, from.column, this.pieces);
-        if (!this.pieceSelected.isKing ) {
+        if (!this.pieceSelected.isKing) {
             if (this._helper.checkIfPieceSelectedCanBeKing(this.pieceSelected, to.row)) {
                 this._pieceActions.makeKing(this.pieceSelected);
             }
