@@ -39,7 +39,7 @@ export function pieces(state: State = [], action: Actions): State {
     switch (action.type) {
 
         case DISPLAY_PIECES:
-        return action.payload;
+            return action.payload;
 
         case MOVE_PIECES:
             const piece = state.find((p) => {
@@ -48,9 +48,17 @@ export function pieces(state: State = [], action: Actions): State {
                 }
                 return false;
             });
+            const emptySpace = state.find((p) => {
+                if (p.row === action.destination.row && p.col === action.destination.column) {
+                    return true;
+                }
+                return false;
+            });
             if (piece) {
-                piece.row = action.destination.row;
-                piece.col = action.destination.column;
+                if (!emptySpace) {
+                    piece.row = action.destination.row;
+                    piece.col = action.destination.column;
+                }
             }
             return state;
 

@@ -286,7 +286,12 @@ export class GameBoardComponent implements OnInit {
 
     }
 
+    
+
     public isValidMove(from: Position, to: Position): boolean {
+        //if (this._helper.findEmptySpace(to.row, to.column, this.pieces)) {
+        //    return false 
+        //}
         const checkIfSpaceEmpty = this._helper.findEmptySpace(to.row, to.column, this.pieces);
         this.pieceSelected = this._helper.findSelectedPiece(from.row, from.column, this.pieces);
         if (!this.pieceSelected.isKing) {
