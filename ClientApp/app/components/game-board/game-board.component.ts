@@ -87,6 +87,37 @@ export class GameBoardComponent implements OnInit {
         return this.squares.find((square) => (square.row === row && square.col === col));
     }
 
+    public switchTurn() {
+        this.currentlyPlayingColor = this.currentlyPlayingColor === 'red' ? 'black' : 'red';
+    }
+
+    public moveStarted(row: number, column: number): void {
+        this.originalPosition = { row, column };
+        this.pieceSelected = this._helper.findSelectedPiece(this.originalPosition.row, this.originalPosition.column, this.pieces);
+        if (this.pieceSelectedisCurrentPlayer()) {
+            if (!this.pieceSelected.isKing) {
+                this._squareActions.availableMoves(this.originalPosition, this.pieceSelected);
+            }
+            this._appStateActions.updateState({ 'player.isMoving': true });
+        }
+    }
+
+    public moveInProgress(originalPosition: Position, row: number, column: number) {
+        if (this.pieceSelectedisCurrentPlayer()) {
+            if (this.isAJump(this.originalPosition, { row, column })) {
+                this._pieceActions.jump(this.originalPosition, { row, column }, this.skippedPosition);
+                this._pointActions.addPoint(this.pieceSelected.color);
+                this.addingPoints();
+                this.switchTurn();
+            } else if (this.isValidMove(this.originalPosition, { row, column })) {
+                this._pieceActions.move(this.originalPosition, { row, column });
+                this.switchTurn();
+            }
+            this._squareActions.unhighlightSquares();
+        }
+        this._appStateActions.updateState({ 'player.isMoving': false });
+    }
+
     public addingPoints(): void {
         if (this.pieceSelected.color === 'red') {
             this.scoreRed = Array(this.points[0].count).fill('1');
@@ -97,32 +128,11 @@ export class GameBoardComponent implements OnInit {
 
     public moveSelected(row: number, column: number): void {
         if (!this.isMoving) {
-            this.originalPosition = { row, column };
-            this.pieceSelected = this._helper.findSelectedPiece(this.originalPosition.row, this.originalPosition.column, this.pieces);
-            if (this.pieceSelectedisCurrentPlayer()) {
-                if (!this.pieceSelected.isKing) {
-                    this._squareActions.availableMoves(this.originalPosition, this.pieceSelected);
-                }
-                this._appStateActions.updateState({ 'player.isMoving': true });
-            }
+            this.moveStarted(row, column);
         } else {
-            if (this.pieceSelectedisCurrentPlayer()) {
-                if (this.isAJump(this.originalPosition, { row, column })) {
-                    this._pieceActions.jump(this.originalPosition, { row, column }, this.skippedPosition);
-                    this._pointActions.addPoint(this.pieceSelected.color);
-                    this.addingPoints();
-                    this.currentlyPlayingColor = this.currentlyPlayingColor === 'red' ? 'black' : 'red';
-                } else if (this.isValidMove(this.originalPosition, { row, column })) {
-                    this._pieceActions.move(this.originalPosition, { row, column });
-                    this.currentlyPlayingColor = this.currentlyPlayingColor === 'red' ? 'black' : 'red';
-                }
-                this._squareActions.unhighlightSquares();
-            }
-            this._appStateActions.updateState({ 'player.isMoving': false });
+            this.moveInProgress(this.originalPosition, row, column);
         }
     }
-
-
 
     public isAJump(from: Position, to: Position): boolean {
         this.pieceSelected = this._helper.findSelectedPiece(from.row, from.column, this.pieces);
