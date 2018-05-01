@@ -29,11 +29,5 @@ export class Helper {
         }
         return false;
     }
-
-
-
-
-
-
 }
 
