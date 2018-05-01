@@ -104,21 +104,24 @@ export class GameBoardComponent implements OnInit {
 
     public moveInProgress(originalPosition: Position, row: number, column: number) {
         if (this.pieceSelectedisCurrentPlayer()) {
-            if (this.isAJump(this.originalPosition, { row, column })) {
-                this._pieceActions.jump(this.originalPosition, { row, column }, this.skippedPosition);
-                this._pointActions.addPoint(this.pieceSelected.color);
+            if (this.isAJump(originalPosition, { row, column })) {
+                this._pieceActions.jump(originalPosition, { row, column }, this.skippedPosition);
                 this.addingPoints();
-                this.switchTurn();
-            } else if (this.isValidMove(this.originalPosition, { row, column })) {
-                this._pieceActions.move(this.originalPosition, { row, column });
-                this.switchTurn();
+            } else if (this.isValidMove(originalPosition, { row, column })) {
+                this._pieceActions.move(originalPosition, { row, column });
             }
+            this.switchTurn();
             this._squareActions.unhighlightSquares();
         }
+    }
+
+    public moveComplete() {
         this._appStateActions.updateState({ 'player.isMoving': false });
     }
 
+
     public addingPoints(): void {
+        this._pointActions.addPoint(this.pieceSelected.color);
         if (this.pieceSelected.color === 'red') {
             this.scoreRed = Array(this.points[0].count).fill('1');
         } else if (this.pieceSelected.color === 'black') {
@@ -131,6 +134,7 @@ export class GameBoardComponent implements OnInit {
             this.moveStarted(row, column);
         } else {
             this.moveInProgress(this.originalPosition, row, column);
+            this.moveComplete();
         }
     }
 
