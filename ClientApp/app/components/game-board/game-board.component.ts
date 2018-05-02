@@ -10,6 +10,7 @@ import { GameBoardActions } from '../../actionHandlers/gameBoardActions.actions'
 import { PointActions } from '../../actionHandlers/pointActions.actions';
 import { AppStateActions } from '../../actionHandlers/appState.actions';
 import { Helper } from '../../helpers/helper';
+import * as Constants from '../../constants/constants';
 
 
 
@@ -19,18 +20,18 @@ import { Helper } from '../../helpers/helper';
     styleUrls: ['./game-board.component.css']
 })
 export class GameBoardComponent implements OnInit {
-    pieces: Array<Piece>;
-    piece: Piece;
-    point: Point;
-    squares: Array<Square>;
-    points: Array<Point>;
-    scoreRed: Array<number> = [];
-    scoreBlack: Array<number> = [];
+    public pieces: Array<Piece>;
+    public piece: Piece;
+    public point: Point;
+    public squares: Array<Square>;
+    public points: Array<Point>;
+    public scoreRed: Array<number> = [];
+    public scoreBlack: Array<number> = [];
 
     public selectedPiece: number;
     public isMoving = false;
     public originalPosition: Position;
-    public currentlyPlayingColor = 'red';
+    public currentlyPlayingColor = Constants.ColorForFirstPlayer;
     public skippedPosition: Position;
     public availablePositionOne: Position;
     public availablePositionTwo: Position;
@@ -64,6 +65,9 @@ export class GameBoardComponent implements OnInit {
 
     public ngOnDestroy() {
         this.appStateSubscription.unsubscribe();
+        this.pointsSubscription.unsubscribe();
+        this.piecesSubscription.unsubscribe();
+        this.squaresSubscription.unsubcribe();
     }
 
     public pieceSelectedisCurrentPlayer(): boolean {
@@ -87,8 +91,16 @@ export class GameBoardComponent implements OnInit {
         return this.squares.find((square) => (square.row === row && square.col === col));
     }
 
+    public makePieceSelectedKing(pieceSelected: any, to: Position) {
+        if (!this.pieceSelected.isKing) {
+            if (this._helper.checkIfPieceSelectedCanBeKing(this.pieceSelected, to.row)) {
+                this._pieceActions.makeKing(this.pieceSelected);
+            }
+        }
+    }
+
     public switchTurn() {
-        this.currentlyPlayingColor = this.currentlyPlayingColor === 'red' ? 'black' : 'red';
+        this.currentlyPlayingColor = this.currentlyPlayingColor === Constants.ColorForFirstPlayer ? Constants.ColorForSecondPlayer : Constants.ColorForFirstPlayer;;
     }
 
     public moveStarted(row: number, column: number): void {
@@ -104,24 +116,27 @@ export class GameBoardComponent implements OnInit {
 
     public moveInProgress(originalPosition: Position, row: number, column: number) {
         if (this.pieceSelectedisCurrentPlayer()) {
-            if (this.isAJump(this.originalPosition, { row, column })) {
-                this._pieceActions.jump(this.originalPosition, { row, column }, this.skippedPosition);
-                this._pointActions.addPoint(this.pieceSelected.color);
+            if (this.isAJump(originalPosition, { row, column })) {
+                this._pieceActions.jump(originalPosition, { row, column }, this.skippedPosition);
                 this.addingPoints();
-                this.switchTurn();
-            } else if (this.isValidMove(this.originalPosition, { row, column })) {
-                this._pieceActions.move(this.originalPosition, { row, column });
-                this.switchTurn();
+            } else if (this.isValidMove(originalPosition, { row, column })) {
+                this._pieceActions.move(originalPosition, { row, column });
             }
+            this.switchTurn();
             this._squareActions.unhighlightSquares();
         }
+    }
+
+    public moveComplete() {
         this._appStateActions.updateState({ 'player.isMoving': false });
     }
 
+
     public addingPoints(): void {
-        if (this.pieceSelected.color === 'red') {
+        this._pointActions.addPoint(this.pieceSelected.color);
+        if (this.pieceSelected.color === Constants.ColorForFirstPlayer) {
             this.scoreRed = Array(this.points[0].count).fill('1');
-        } else if (this.pieceSelected.color === 'black') {
+        } else if (this.pieceSelected.color === Constants.ColorForSecondPlayer) {
             this.scoreBlack = Array(this.points[1].count).fill('2');
         }
     }
@@ -129,43 +144,32 @@ export class GameBoardComponent implements OnInit {
     public moveSelected(row: number, column: number): void {
         if (!this.isMoving) {
             this.moveStarted(row, column);
+            this.pieceSelected = this._helper.findSelectedPiece(row, column, this.pieces);
         } else {
             this.moveInProgress(this.originalPosition, row, column);
+            this.moveComplete();
         }
     }
 
     public isAJump(from: Position, to: Position): boolean {
-        this.pieceSelected = this._helper.findSelectedPiece(from.row, from.column, this.pieces);
-        if (this.pieceSelected.color === 'red') {
+        if (this.pieceSelected.color === Constants.ColorForFirstPlayer) {
             if (!this.pieceSelected.isKing) {
                 if (to.row > from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseOne(from);
                         return true;
                     }
                     if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseTwo(from);
                         return true;
                     }
                 } else if (to.row < from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseThree(from);
                         return true;
                     }
                     if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseFour(from);
                         return true;
                     }
 
@@ -173,33 +177,21 @@ export class GameBoardComponent implements OnInit {
             } else if (this.pieceSelected.isKing) {
                 if (to.row > from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceKingSkippedPositionCaseOne(from);
                         return true;
 
                     } else if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseTwo(from);
                         return true;
 
                     }
                 } else if (to.row < from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseThree(from);
                         return true;
 
                     } else if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseFour(from);
                         return true;
 
                     }
@@ -207,36 +199,24 @@ export class GameBoardComponent implements OnInit {
                 }
             }
 
-        } else if (this.pieceSelected.color === 'black') {
+        } else if (this.pieceSelected.color === Constants.ColorForSecondPlayer) {
             if (!this.pieceSelected.isKing) {
                 if (to.row > from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseOne(from);
                         return true;
                     }
                     if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseTwo(from);
                         return true;
                     }
                 } else if (to.row < from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseThree(from);
                         return true;
                     }
                     if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseFour(from);
                         return true;
                     }
 
@@ -244,83 +224,43 @@ export class GameBoardComponent implements OnInit {
             } else if (this.pieceSelected.isKing) {
                 if (to.row > from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceKingSkippedPositionCaseOne(from);
                         return true;
 
                     } else if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceKingSkippedPositionCaseTwo(from);
                         return true;
 
                     }
                 } else if (to.row < from.row) {
                     if (from.column === to.column - 2) {
+                        this.skippedPosition = this._helper.ifPieceKingSkippedPositionCaseThree(from);
                         this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column + 1
+                            row: this.skippedPosition.row,
+                            column: this.skippedPosition.column + 1
                         };
                         return true;
 
                     } else if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceKingSkippedPositionCaseFour(from);
                         return true;
 
                     }
-
                 }
             }
         }
         return false;
-
     }
 
     public isValidMove(from: Position, to: Position): boolean {
-        const checkIfSpaceEmpty = this._helper.findEmptySpace(to.row, to.column, this.pieces);
-        this.pieceSelected = this._helper.findSelectedPiece(from.row, from.column, this.pieces);
-        if (!this.pieceSelected.isKing) {
-            if (this._helper.checkIfPieceSelectedCanBeKing(this.pieceSelected, to.row)) {
-                this._pieceActions.makeKing(this.pieceSelected);
+        this.makePieceSelectedKing(this.pieceSelected, to);
+        if (this.pieceSelected.color === Constants.ColorForFirstPlayer) {
+            if (this._helper.checkIfMoveCorrectForRed(this.pieceSelected, from, to)) {
+                return true;
             }
-        }
-        if (!checkIfSpaceEmpty) {
-            return false;
-        }
-        if (this.pieceSelected.color === 'red') {
-            if (!this.pieceSelected.isKing) {
-                if (to.row > from.row) {
-                    if (from.column === to.column - 1 || from.column === to.column + 1) {
-                        return true;
-                    }
-                }
-            } else if (this.pieceSelected.isKing) {
-                if (to.row > from.row || to.row < from.row) {
-                    if (from.column === to.column - 1 || from.column === to.column + 1) {
-                        return true;
-                    }
-                }
-            }
-        } else if (this.pieceSelected.color === 'black') {
-            if (!this.pieceSelected.isKing) {
-                if (to.row < from.row) {
-                    if (from.column === to.column - 1 || from.column === to.column + 1) {
-                        return true;
-                    }
-                }
-
-            } else if (this.pieceSelected.isKing) {
-                if (to.row < from.row || to.row > from.row) {
-                    if (from.column === to.column - 1 || from.column === to.column + 1) {
-                        return true;
-                    }
-                }
+        } else if (this.pieceSelected.color === Constants.ColorForSecondPlayer) {
+            if (this._helper.checkIfMoveCorrectForBlack(this.pieceSelected, from, to)) {
+                return true;
             }
         }
         return false;

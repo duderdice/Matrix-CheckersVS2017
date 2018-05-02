@@ -6,11 +6,13 @@ Checkers app showing Angular apps in Visual Studio 2017
 
 * #####  ~~Rename the variables(currentPlayer) to be more specific to their purpose.~~
 
-* #####  Refactor  "moveSelected" function in the Game Board component to reflect game logic.
+* #####  ~~Refactor  "moveSelected" function in the Game Board component to reflect game logic.~~
 
-* #####  Move "isValid" function from Game Board component to Action-Handler.
+* #####  ~~Move "isValid" function from Game Board component to Helper methods~~.
 
-* #####  Use constants instead of string literal.
+* #####  ~~Move "isAJump" function from Game Board component to Helper methods~~.
+
+* #####  ~~Use constants instead of string literal~~.
 
 * #####  Redefine row and col in Square model using Position model.
 
