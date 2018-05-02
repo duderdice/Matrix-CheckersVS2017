@@ -25,40 +25,50 @@ export class Helper {
         return false;
     }
 
-    public checkIfMoveCorrectForRed(pieceSelected: Piece, from: Position, to: Position) {
+    public checkIfMoveCorrectForRed(pieceSelected: Piece, from: Position, to: Position): boolean {
         if (!pieceSelected.isKing) {
             if (to.row > from.row) {
                 if (from.column === to.column - 1 || from.column === to.column + 1) {
                     return true;
                 }
+                return false;
             }
+            return false;
         } else if (pieceSelected.isKing) {
             if (to.row > from.row || to.row < from.row) {
                 if (from.column === to.column - 1 || from.column === to.column + 1) {
                     return true;
                 }
+                return false;
             }
+            return false;
         }
+        return false;
     }
 
-    public checkIfMoveCorrectForBlack(pieceSelected: Piece, from: Position, to: Position) {
+    public checkIfMoveCorrectForBlack(pieceSelected: Piece, from: Position, to: Position): boolean {
         if (!pieceSelected.isKing) {
             if (to.row < from.row) {
                 if (from.column === to.column - 1 || from.column === to.column + 1) {
                     return true;
                 }
+                return false;
             }
+            return false;
 
         } else if (pieceSelected.isKing) {
             if (to.row < from.row || to.row > from.row) {
                 if (from.column === to.column - 1 || from.column === to.column + 1) {
                     return true;
                 }
+                return false;
             }
+            return false;
         }
+        return false;
     }
 
-    public ifPieceNotKingSkippedPositionCaseOne(from: Position) {
+    public ifPieceNotKingSkippedPositionCaseOne(from: Position): Position{
         this.skippedPosition = {
             row: from.row + 1,
             column: from.column + 1
@@ -66,7 +76,7 @@ export class Helper {
         return this.skippedPosition;
     }
 
-    public ifPieceNotKingSkippedPositionCaseTwo(from: Position) {
+    public ifPieceNotKingSkippedPositionCaseTwo(from: Position): Position{
         this.skippedPosition = {
             row: from.row + 1,
             column: from.column - 1
@@ -74,7 +84,7 @@ export class Helper {
         return this.skippedPosition;
     }
 
-    public ifPieceNotKingSkippedPositionCaseThree(from: Position) {
+    public ifPieceNotKingSkippedPositionCaseThree(from: Position): Position{
         this.skippedPosition = {
             row: from.row - 1,
             column: from.column + 1
@@ -82,7 +92,7 @@ export class Helper {
         return this.skippedPosition;
     }
 
-    public ifPieceNotKingSkippedPositionCaseFour(from: Position) {
+    public ifPieceNotKingSkippedPositionCaseFour(from: Position): Position {
         this.skippedPosition = {
             row: from.row - 1,
             column: from.column - 1
@@ -90,7 +100,7 @@ export class Helper {
         return this.skippedPosition;
     }
 
-    public ifPieceKingSkippedPositionCaseOne(from: Position) {
+    public ifPieceKingSkippedPositionCaseOne(from: Position): Position {
         this.skippedPosition = {
             row: from.row + 1,
             column: from.column + 1
@@ -98,7 +108,7 @@ export class Helper {
         return this.skippedPosition;
     }
 
-    public ifPieceKingSkippedPositionCaseTwo(from: Position) {
+    public ifPieceKingSkippedPositionCaseTwo(from: Position): Position {
         this.skippedPosition = {
             row: from.row + 1,
             column: from.column - 1
@@ -106,7 +116,7 @@ export class Helper {
         return this.skippedPosition;
     }
 
-    public ifPieceKingSkippedPositionCaseThree(from: Position) {
+    public ifPieceKingSkippedPositionCaseThree(from: Position): Position {
         this.skippedPosition = {
             row: from.row - 1,
             column: from.column - 1
@@ -114,7 +124,7 @@ export class Helper {
         return this.skippedPosition;
     }
 
-    public ifPieceKingSkippedPositionCaseFour(from: Position) {
+    public ifPieceKingSkippedPositionCaseFour(from: Position): Position {
         this.skippedPosition = {
             row: from.row - 1,
             column: from.column - 1
