@@ -286,50 +286,20 @@ export class GameBoardComponent implements OnInit {
 
     }
 
-    
-
     public isValidMove(from: Position, to: Position): boolean {
-        //if (this._helper.findEmptySpace(to.row, to.column, this.pieces)) {
-        //    return false 
-        //}
-        const checkIfSpaceEmpty = this._helper.findEmptySpace(to.row, to.column, this.pieces);
         this.pieceSelected = this._helper.findSelectedPiece(from.row, from.column, this.pieces);
         if (!this.pieceSelected.isKing) {
             if (this._helper.checkIfPieceSelectedCanBeKing(this.pieceSelected, to.row)) {
                 this._pieceActions.makeKing(this.pieceSelected);
             }
         }
-        if (!checkIfSpaceEmpty) {
-            return false;
-        }
         if (this.pieceSelected.color === 'red') {
-            if (!this.pieceSelected.isKing) {
-                if (to.row > from.row) {
-                    if (from.column === to.column - 1 || from.column === to.column + 1) {
-                        return true;
-                    }
-                }
-            } else if (this.pieceSelected.isKing) {
-                if (to.row > from.row || to.row < from.row) {
-                    if (from.column === to.column - 1 || from.column === to.column + 1) {
-                        return true;
-                    }
-                }
+            if (this._helper.checkIfMoveCorrectForRed(this.pieceSelected, from, to)) {
+                return true;
             }
         } else if (this.pieceSelected.color === 'black') {
-            if (!this.pieceSelected.isKing) {
-                if (to.row < from.row) {
-                    if (from.column === to.column - 1 || from.column === to.column + 1) {
-                        return true;
-                    }
-                }
-
-            } else if (this.pieceSelected.isKing) {
-                if (to.row < from.row || to.row > from.row) {
-                    if (from.column === to.column - 1 || from.column === to.column + 1) {
-                        return true;
-                    }
-                }
+            if (this._helper.checkIfMoveCorrectForBlack(this.pieceSelected, from, to)) {
+                return true;
             }
         }
         return false;

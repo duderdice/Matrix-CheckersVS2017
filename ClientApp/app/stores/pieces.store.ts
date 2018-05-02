@@ -49,11 +49,13 @@ export function pieces(state: State = [], action: Actions): State {
                 return false;
             });
             const emptySpace = state.find((p) => {
-                if (p.row === action.destination.row && p.col === action.destination.column) {
+                if (p.row === action.destination.row && p.col === action.destination.column && p.color !='null') {
                     return true;
+                } else {
+                    return false;
                 }
-                return false;
             });
+            
             if (piece) {
                 if (!emptySpace) {
                     piece.row = action.destination.row;
