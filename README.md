@@ -10,9 +10,9 @@ Checkers app showing Angular apps in Visual Studio 2017
 
 * #####  ~~Move "isValid" function from Game Board component to Helper methods~~.
 
-* #####  Move "isAJump" function from Game Board component to Helper methods.
+* #####  ~~Move "isAJump" function from Game Board component to Helper methods~~.
 
-* #####  Use constants instead of string literal.
+* #####  ~~Use constants instead of string literal~~.
 
 * #####  Redefine row and col in Square model using Position model.
 
