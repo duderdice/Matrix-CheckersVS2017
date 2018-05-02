@@ -10,6 +10,7 @@ import { GameBoardActions } from '../../actionHandlers/gameBoardActions.actions'
 import { PointActions } from '../../actionHandlers/pointActions.actions';
 import { AppStateActions } from '../../actionHandlers/appState.actions';
 import { Helper } from '../../helpers/helper';
+import * as Constants from '../../constants/constants';
 
 
 
@@ -30,7 +31,7 @@ export class GameBoardComponent implements OnInit {
     public selectedPiece: number;
     public isMoving = false;
     public originalPosition: Position;
-    public currentlyPlayingColor = 'red';
+    public currentlyPlayingColor = Constants.ColorForFirstPlayer;
     public skippedPosition: Position;
     public availablePositionOne: Position;
     public availablePositionTwo: Position;
@@ -96,7 +97,7 @@ export class GameBoardComponent implements OnInit {
     }
 
     public switchTurn() {
-        this.currentlyPlayingColor = this.currentlyPlayingColor === 'red' ? 'black' : 'red';
+        this.currentlyPlayingColor = this.currentlyPlayingColor === Constants.ColorForFirstPlayer ? Constants.ColorForSecondPlayer : Constants.ColorForFirstPlayer;;
     }
 
     public moveStarted(row: number, column: number): void {
@@ -130,9 +131,9 @@ export class GameBoardComponent implements OnInit {
 
     public addingPoints(): void {
         this._pointActions.addPoint(this.pieceSelected.color);
-        if (this.pieceSelected.color === 'red') {
+        if (this.pieceSelected.color === Constants.ColorForFirstPlayer) {
             this.scoreRed = Array(this.points[0].count).fill('1');
-        } else if (this.pieceSelected.color === 'black') {
+        } else if (this.pieceSelected.color === Constants.ColorForSecondPlayer) {
             this.scoreBlack = Array(this.points[1].count).fill('2');
         }
     }
@@ -148,7 +149,7 @@ export class GameBoardComponent implements OnInit {
     }
 
     public isAJump(from: Position, to: Position): boolean {
-        if (this.pieceSelected.color === 'red') {
+        if (this.pieceSelected.color === Constants.ColorForFirstPlayer) {
             if (!this.pieceSelected.isKing) {
                 if (to.row > from.row) {
                     if (from.column === to.column - 2) {
@@ -195,7 +196,7 @@ export class GameBoardComponent implements OnInit {
                 }
             }
 
-        } else if (this.pieceSelected.color === 'black') {
+        } else if (this.pieceSelected.color === Constants.ColorForSecondPlayer) {
             if (!this.pieceSelected.isKing) {
                 if (to.row > from.row) {
                     if (from.column === to.column - 2) {
@@ -250,11 +251,11 @@ export class GameBoardComponent implements OnInit {
 
     public isValidMove(from: Position, to: Position): boolean {
         this.checkIfPieceSelectedIsKing(this.pieceSelected, to);
-        if (this.pieceSelected.color === 'red') {
+        if (this.pieceSelected.color === Constants.ColorForFirstPlayer) {
             if (this._helper.checkIfMoveCorrectForRed(this.pieceSelected, from, to)) {
                 return true;
             }
-        } else if (this.pieceSelected.color === 'black') {
+        } else if (this.pieceSelected.color === Constants.ColorForSecondPlayer) {
             if (this._helper.checkIfMoveCorrectForBlack(this.pieceSelected, from, to)) {
                 return true;
             }

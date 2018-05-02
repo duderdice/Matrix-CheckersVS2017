@@ -1,5 +1,6 @@
 ﻿import { Piece } from '../models/game-piece';
 import { Position } from '../models/position';
+import * as Constants from '../constants/constants';
 
 export class Helper {
 
@@ -17,9 +18,9 @@ export class Helper {
     }
 
     public checkIfPieceSelectedCanBeKing(piece: Piece, row: number): boolean {
-        if (piece.color === 'red' && row === 7) {
+        if (piece.color === Constants.ColorForFirstPlayer && row === 7) {
             return true;
-        } else if (piece.color === 'black' && row === 0) {
+        } else if (piece.color === Constants.ColorForSecondPlayer && row === 0) {
             return true;
         }
         return false;
