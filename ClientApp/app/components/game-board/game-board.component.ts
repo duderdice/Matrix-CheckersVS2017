@@ -20,13 +20,13 @@ import * as Constants from '../../constants/constants';
     styleUrls: ['./game-board.component.css']
 })
 export class GameBoardComponent implements OnInit {
-    pieces: Array<Piece>;
-    piece: Piece;
-    point: Point;
-    squares: Array<Square>;
-    points: Array<Point>;
-    scoreRed: Array<number> = [];
-    scoreBlack: Array<number> = [];
+    public pieces: Array<Piece>;
+    public piece: Piece;
+    public point: Point;
+    public squares: Array<Square>;
+    public points: Array<Point>;
+    public scoreRed: Array<number> = [];
+    public scoreBlack: Array<number> = [];
 
     public selectedPiece: number;
     public isMoving = false;
@@ -65,6 +65,9 @@ export class GameBoardComponent implements OnInit {
 
     public ngOnDestroy() {
         this.appStateSubscription.unsubscribe();
+        this.pointsSubscription.unsubscribe();
+        this.piecesSubscription.unsubscribe();
+        this.squaresSubscription.unsubcribe();
     }
 
     public pieceSelectedisCurrentPlayer(): boolean {
@@ -88,7 +91,7 @@ export class GameBoardComponent implements OnInit {
         return this.squares.find((square) => (square.row === row && square.col === col));
     }
 
-    public checkIfPieceSelectedIsKing(pieceSelected: any, to: Position) {
+    public makePieceSelectedKing(pieceSelected: any, to: Position) {
         if (!this.pieceSelected.isKing) {
             if (this._helper.checkIfPieceSelectedCanBeKing(this.pieceSelected, to.row)) {
                 this._pieceActions.makeKing(this.pieceSelected);
@@ -250,7 +253,7 @@ export class GameBoardComponent implements OnInit {
     }
 
     public isValidMove(from: Position, to: Position): boolean {
-        this.checkIfPieceSelectedIsKing(this.pieceSelected, to);
+        this.makePieceSelectedKing(this.pieceSelected, to);
         if (this.pieceSelected.color === Constants.ColorForFirstPlayer) {
             if (this._helper.checkIfMoveCorrectForRed(this.pieceSelected, from, to)) {
                 return true;

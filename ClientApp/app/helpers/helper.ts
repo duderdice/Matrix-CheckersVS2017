@@ -12,7 +12,6 @@ export class Helper {
                 const requiredPiece = pieces[i];
                 return requiredPiece;
             }
-
         }
         return false;
     }
@@ -60,7 +59,7 @@ export class Helper {
     }
 
     public ifPieceNotKingSkippedPositionCaseOne(from: Position) {
-         this.skippedPosition = {
+        this.skippedPosition = {
             row: from.row + 1,
             column: from.column + 1
         };
@@ -122,7 +121,5 @@ export class Helper {
         };
         return this.skippedPosition;
     }
-
-    
 }
 
