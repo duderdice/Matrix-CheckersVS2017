@@ -8,7 +8,7 @@ Checkers app showing Angular apps in Visual Studio 2017
 
 * #####  ~~Refactor  "moveSelected" function in the Game Board component to reflect game logic.~~
 
-* #####  Move "isValid" function from Game Board component to Action-Handler.
+* #####  ~~Move "isValid" function from Game Board component to Helper methods~~.
 
 * #####  Use constants instead of string literal.
 

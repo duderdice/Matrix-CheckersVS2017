@@ -87,6 +87,14 @@ export class GameBoardComponent implements OnInit {
         return this.squares.find((square) => (square.row === row && square.col === col));
     }
 
+    public checkIfPieceSelectedIsKing(pieceSelected: any, to: Position){
+        if (!this.pieceSelected.isKing) {
+            if (this._helper.checkIfPieceSelectedCanBeKing(this.pieceSelected, to.row)) {
+                this._pieceActions.makeKing(this.pieceSelected);
+            }
+        }
+    }
+
     public switchTurn() {
         this.currentlyPlayingColor = this.currentlyPlayingColor === 'red' ? 'black' : 'red';
     }
@@ -288,11 +296,7 @@ export class GameBoardComponent implements OnInit {
 
     public isValidMove(from: Position, to: Position): boolean {
         this.pieceSelected = this._helper.findSelectedPiece(from.row, from.column, this.pieces);
-        if (!this.pieceSelected.isKing) {
-            if (this._helper.checkIfPieceSelectedCanBeKing(this.pieceSelected, to.row)) {
-                this._pieceActions.makeKing(this.pieceSelected);
-            }
-        }
+        this.checkIfPieceSelectedIsKing(this.pieceSelected, to);
         if (this.pieceSelected.color === 'red') {
             if (this._helper.checkIfMoveCorrectForRed(this.pieceSelected, from, to)) {
                 return true;
