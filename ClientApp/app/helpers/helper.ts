@@ -3,6 +3,8 @@ import { Position } from '../models/position';
 
 export class Helper {
 
+    public skippedPosition: Position;
+
     public findSelectedPiece(row: number, col: number, pieces: Array<Piece>): Piece | false {
         for (let i = 0; i < pieces.length; i++) {
             if (pieces[i].row === row && pieces[i].col === col) {
@@ -55,5 +57,71 @@ export class Helper {
             }
         }
     }
+
+    public ifPieceNotKingSkippedPositionCaseOne(from: Position) {
+         this.skippedPosition = {
+            row: from.row + 1,
+            column: from.column + 1
+        };
+        return this.skippedPosition;
+    }
+
+    public ifPieceNotKingSkippedPositionCaseTwo(from: Position) {
+        this.skippedPosition = {
+            row: from.row + 1,
+            column: from.column - 1
+        };
+        return this.skippedPosition;
+    }
+
+    public ifPieceNotKingSkippedPositionCaseThree(from: Position) {
+        this.skippedPosition = {
+            row: from.row - 1,
+            column: from.column + 1
+        };
+        return this.skippedPosition;
+    }
+
+    public ifPieceNotKingSkippedPositionCaseFour(from: Position) {
+        this.skippedPosition = {
+            row: from.row - 1,
+            column: from.column - 1
+        };
+        return this.skippedPosition;
+    }
+
+    public ifPieceKingSkippedPositionCaseOne(from: Position) {
+        this.skippedPosition = {
+            row: from.row + 1,
+            column: from.column + 1
+        };
+        return this.skippedPosition;
+    }
+
+    public ifPieceKingSkippedPositionCaseTwo(from: Position) {
+        this.skippedPosition = {
+            row: from.row + 1,
+            column: from.column - 1
+        };
+        return this.skippedPosition;
+    }
+
+    public ifPieceKingSkippedPositionCaseThree(from: Position) {
+        this.skippedPosition = {
+            row: from.row - 1,
+            column: from.column - 1
+        };
+        return this.skippedPosition;
+    }
+
+    public ifPieceKingSkippedPositionCaseFour(from: Position) {
+        this.skippedPosition = {
+            row: from.row - 1,
+            column: from.column - 1
+        };
+        return this.skippedPosition;
+    }
+
+    
 }
 

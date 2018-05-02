@@ -87,7 +87,7 @@ export class GameBoardComponent implements OnInit {
         return this.squares.find((square) => (square.row === row && square.col === col));
     }
 
-    public checkIfPieceSelectedIsKing(pieceSelected: any, to: Position){
+    public checkIfPieceSelectedIsKing(pieceSelected: any, to: Position) {
         if (!this.pieceSelected.isKing) {
             if (this._helper.checkIfPieceSelectedCanBeKing(this.pieceSelected, to.row)) {
                 this._pieceActions.makeKing(this.pieceSelected);
@@ -140,6 +140,7 @@ export class GameBoardComponent implements OnInit {
     public moveSelected(row: number, column: number): void {
         if (!this.isMoving) {
             this.moveStarted(row, column);
+            this.pieceSelected = this._helper.findSelectedPiece(row, column, this.pieces);
         } else {
             this.moveInProgress(this.originalPosition, row, column);
             this.moveComplete();
@@ -147,37 +148,24 @@ export class GameBoardComponent implements OnInit {
     }
 
     public isAJump(from: Position, to: Position): boolean {
-        this.pieceSelected = this._helper.findSelectedPiece(from.row, from.column, this.pieces);
         if (this.pieceSelected.color === 'red') {
             if (!this.pieceSelected.isKing) {
                 if (to.row > from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseOne(from);
                         return true;
                     }
                     if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseTwo(from);
                         return true;
                     }
                 } else if (to.row < from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseThree(from);
                         return true;
                     }
                     if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseFour(from);
                         return true;
                     }
 
@@ -185,33 +173,21 @@ export class GameBoardComponent implements OnInit {
             } else if (this.pieceSelected.isKing) {
                 if (to.row > from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceKingSkippedPositionCaseOne(from);
                         return true;
 
                     } else if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseTwo(from);
                         return true;
 
                     }
                 } else if (to.row < from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseThree(from);
                         return true;
 
                     } else if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseFour(from);
                         return true;
 
                     }
@@ -223,32 +199,20 @@ export class GameBoardComponent implements OnInit {
             if (!this.pieceSelected.isKing) {
                 if (to.row > from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseOne(from);
                         return true;
                     }
                     if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseTwo(from);
                         return true;
                     }
                 } else if (to.row < from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseThree(from);
                         return true;
                     }
                     if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceNotKingSkippedPositionCaseFour(from);
                         return true;
                     }
 
@@ -256,46 +220,35 @@ export class GameBoardComponent implements OnInit {
             } else if (this.pieceSelected.isKing) {
                 if (to.row > from.row) {
                     if (from.column === to.column - 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column + 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceKingSkippedPositionCaseOne(from);
                         return true;
 
                     } else if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row + 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceKingSkippedPositionCaseTwo(from);
                         return true;
 
                     }
                 } else if (to.row < from.row) {
                     if (from.column === to.column - 2) {
+                        this.skippedPosition = this._helper.ifPieceKingSkippedPositionCaseThree(from);
                         this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column + 1
+                            row: this.skippedPosition.row,
+                            column: this.skippedPosition.column + 1
                         };
                         return true;
 
                     } else if (from.column === to.column + 2) {
-                        this.skippedPosition = {
-                            row: from.row - 1,
-                            column: from.column - 1
-                        };
+                        this.skippedPosition = this._helper.ifPieceKingSkippedPositionCaseFour(from);
                         return true;
 
                     }
-
                 }
             }
         }
         return false;
-
     }
 
     public isValidMove(from: Position, to: Position): boolean {
-        this.pieceSelected = this._helper.findSelectedPiece(from.row, from.column, this.pieces);
         this.checkIfPieceSelectedIsKing(this.pieceSelected, to);
         if (this.pieceSelected.color === 'red') {
             if (this._helper.checkIfMoveCorrectForRed(this.pieceSelected, from, to)) {
